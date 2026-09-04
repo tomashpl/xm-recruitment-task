@@ -1,0 +1,11 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+main {
+  display: block;
+  width: min(100%, var(--app-content-width));
+  margin-inline: auto;
+  padding: 12px 12px calc(24px + env(safe-area-inset-bottom));
+}

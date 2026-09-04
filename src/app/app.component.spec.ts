@@ -1,29 +1,44 @@
-import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router, provideRouter } from '@angular/router';
+
 import { AppComponent } from './app.component';
+import { routes } from './app.routes';
 
 describe('AppComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [AppComponent],
-    providers: [provideRouter([])]
-  }));
+  let fixture: ComponentFixture<AppComponent>;
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [AppComponent],
+      providers: [provideZonelessChangeDetection(), provideRouter(routes)],
+    }).compileComponents();
 
-  it(`should have as title 'gallery-template'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('gallery-template');
-  });
-
-  it('should render title', async () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    fixture = TestBed.createComponent(AppComponent);
     await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('gallery-template app is running!');
+  });
+
+  it('renders a main landmark the skip link can target', () => {
+    const main: HTMLElement = fixture.nativeElement.querySelector('main');
+    expect(main.id).toBe('main-content');
+    expect(main.getAttribute('tabindex')).toBe('-1');
+  });
+
+  it('renders a polite live region for later announcements', () => {
+    const status: HTMLElement = fixture.nativeElement.querySelector('[role="status"]');
+    expect(status.getAttribute('aria-live')).toBe('polite');
+  });
+
+  it('reports the current url and hides the back affordance outside the detail route', async () => {
+    await TestBed.inject(Router).navigateByUrl('/favorites');
+    await fixture.whenStable();
+    expect(fixture.componentInstance['url']()).toBe('/favorites');
+    expect(fixture.componentInstance['showBack']()).toBeFalse();
+  });
+
+  it('shows the back affordance on the detail route', async () => {
+    await TestBed.inject(Router).navigateByUrl('/photos/abc');
+    await fixture.whenStable();
+    expect(fixture.componentInstance['showBack']()).toBeTrue();
   });
 });
