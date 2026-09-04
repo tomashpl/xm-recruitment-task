@@ -1,13 +1,27 @@
 describe('global theme', () => {
   const root = () => getComputedStyle(document.documentElement);
 
-  it('pins the Material primary token to the mockup accent', () => {
-    expect(root().getPropertyValue('--mat-sys-primary').trim().toLowerCase()).toContain('#fcbf49');
-  });
+  const materialTokens: Record<string, string> = {
+    'primary': '#fcbf49',
+    'on-primary': '#002133',
+    'surface': '#001b29',
+    'surface-container': '#003049',
+    'on-surface': '#eae2b7',
+    'on-surface-variant': '#b4c4cd',
+    'outline': '#4e6c80',
+    'secondary-container': '#08405d',
+    'on-secondary-container': '#fcbf49',
+    'error': '#ff7a6b',
+    'on-error': '#2b0700',
+    'inverse-surface': '#eae2b7',
+    'inverse-on-surface': '#00263a',
+  };
 
-  it('pins the Material surface token to the mockup background', () => {
-    expect(root().getPropertyValue('--mat-sys-surface').trim().toLowerCase()).toContain('#001b29');
-  });
+  for (const [token, value] of Object.entries(materialTokens)) {
+    it(`pins the Material ${token} token to the mockup value`, () => {
+      expect(root().getPropertyValue(`--mat-sys-${token}`).trim().toLowerCase()).toContain(value);
+    });
+  }
 
   it('exposes the application tokens Material does not model', () => {
     expect(root().getPropertyValue('--app-photo-mat').trim().toLowerCase()).toBe('#00131d');
