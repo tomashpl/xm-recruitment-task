@@ -41,6 +41,9 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# basic-memory - local AI memory, never committed
+.basic-memory/
+
 ### *** required entries below ***
 ###
 ### Please do not add anything below this line, your changes will be overwritten
@@ -74,3 +77,8 @@ tmp
 ###
 ###                                                                                                                                                                                                                                  git#397161
 ###
+.claude
+CLAUDE.md
+1cf79f16-30d7-4561-851d-44d992879c5b.code-workspace
+.angular
+.basic-memory
