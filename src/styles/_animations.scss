@@ -1,0 +1,23 @@
+@keyframes app-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes app-slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+.app-enter-fade { animation: app-fade-in 240ms ease-out; }
+.app-enter-slide { animation: app-slide-up 180ms ease-out; }
+.app-leave-fade { animation: app-fade-in 160ms ease-in reverse; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
