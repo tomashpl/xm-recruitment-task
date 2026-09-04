@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "test:all": "ng test gallery-template --watch=false --browsers=ChromeHeadless",
+    "test:ui": "ng test ui",
+    "test:all": "ng test gallery-template --watch=false --browsers=ChromeHeadless && ng test ui --watch=false --browsers=ChromeHeadless",
     "lint": "ng lint gallery-template && ng lint ui",
     "depcruise": "depcruise src projects --config .dependency-cruiser.cjs",
     "prepare": "husky"

@@ -1,64 +1,48 @@
-# Ui
+# @gallery/ui
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.0.
+Domain-agnostic presentational primitives for the gallery application: `ui-badge`, `ui-button`,
+`ui-empty-state`, `ui-icon`, `ui-icon-button`, `ui-loading-indicator`, `ui-section-heading`,
+`ui-snackbar`, `ui-spinner`.
 
-## Code scaffolding
+## Using it
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+The library is a workspace project, consumed through the `@gallery/ui` path mapping in the root
+`tsconfig.json`. It is not published to npm.
 
-```bash
-ng generate component component-name
-```
+A host must do two things:
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+1. Provide a Material 3 theme. The components read `--mat-sys-*` tokens and ship no theme of
+   their own.
+2. Load the library's global stylesheet, which carries the rules that have to outrank Angular
+   Material's own and so cannot live inside a component:
 
-```bash
-ng generate --help
-```
+   ```scss
+   @use 'gallery-ui';
 
-## Building
-
-To build the library, run:
-
-```bash
-ng build ui
-```
-
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
-
-### Publishing the Library
-
-Once the project is built, you can publish your library by following these steps:
-
-1. Navigate to the `dist` directory:
-
-   ```bash
-   cd dist/ui
+   @include gallery-ui.styles;
    ```
 
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
+   resolved through `stylePreprocessorOptions.includePaths: ["projects/ui/src/styles"]`. The rules
+   come as a mixin rather than bare declarations because they have to outrank Angular Material,
+   so the host controls where in the cascade they land — include them last.
 
-## Running unit tests
+Register the providers once, in the application config:
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+```ts
+import { provideGalleryUi } from '@gallery/ui';
 
-```bash
-ng test
+export const appConfig: ApplicationConfig = {
+  providers: [provideGalleryUi()],
+};
 ```
 
-## Running end-to-end tests
+`provideGalleryUi()` sets the Material icon registry's default font set to
+`material-symbols-outlined`, which `ui-icon` requires.
 
-For end-to-end (e2e) testing, run:
+## Commands
 
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+| Task | Command |
+| --- | --- |
+| Build the library standalone | `ng build ui` |
+| Tests, watch mode | `npm run test:ui` |
+| Tests once, CI-style | `ng test ui --watch=false --browsers=ChromeHeadless` |
