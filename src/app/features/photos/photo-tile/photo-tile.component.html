@@ -1,7 +1,7 @@
 @if (isLink()) {
   <a [routerLink]="detailLink()" [attr.aria-label]="label()">
-    <app-photo-thumb [photo]="photo()" [overlay]="true" />
-    <app-favorite-badge [active]="true" />
+    <app-photo-thumb [photo]="photo()" [overlay]="favorite()" />
+    <app-favorite-badge [active]="favorite()" />
   </a>
 } @else {
   <button

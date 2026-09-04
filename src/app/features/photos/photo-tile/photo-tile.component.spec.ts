@@ -54,4 +54,12 @@ describe('PhotoTileComponent', () => {
     fixture.nativeElement.querySelector('button').click();
     expect(spy).toHaveBeenCalledOnceWith(photo);
   });
+
+  it('reflects the favorite input in the link variant instead of always showing active', async () => {
+    fixture.componentRef.setInput('interaction', 'link');
+    fixture.componentRef.setInput('favorite', false);
+    await fixture.whenStable();
+    const icon: HTMLElement = fixture.nativeElement.querySelector('mat-icon');
+    expect(icon.textContent.trim()).toBe('favorite_border');
+  });
 });
