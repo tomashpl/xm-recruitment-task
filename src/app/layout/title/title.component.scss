@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+h1 {
+  margin: 0;
+  font-family: 'Zen Tokyo Zoo', Outfit, sans-serif;
+  font-size: clamp(32px, 9vw, 52px);
+  line-height: 1.2;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  text-align: center;
+  text-transform: uppercase;
+  overflow-wrap: break-word;
+  background-image: linear-gradient(
+    100deg,
+    var(--app-title-gradient-from) 0%,
+    var(--mat-sys-primary) 26%,
+    var(--app-title-gradient-mid) 50%,
+    var(--mat-sys-primary) 74%,
+    var(--app-title-gradient-from) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}

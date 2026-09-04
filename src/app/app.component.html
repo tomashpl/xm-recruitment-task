@@ -1,5 +1,7 @@
 <app-skip-link target="main-content" />
 
+<app-header [showBack]="showBack()" [favoritesCount]="0" (back)="goBack()" />
+
 <main id="main-content" tabindex="-1">
   <router-outlet />
 </main>

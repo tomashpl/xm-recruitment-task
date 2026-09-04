@@ -1,0 +1,13 @@
+<a
+  matRipple
+  [routerLink]="link()"
+  routerLinkActive
+  [routerLinkActiveOptions]="{ exact: true }"
+  (isActiveChange)="setActive($event)"
+  [class.app-tab-link--active]="active()"
+  [attr.aria-current]="active() ? 'page' : null"
+>
+  <app-icon [name]="currentIcon()" [filled]="active()" [size]="18" />
+  <span>{{ label() }}</span>
+  <ng-content />
+</a>

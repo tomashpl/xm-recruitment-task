@@ -1,0 +1,33 @@
+:host {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: block;
+}
+
+header {
+  padding-top: env(safe-area-inset-top);
+  background: color-mix(in srgb, var(--app-photo-mat) 88%, transparent);
+  backdrop-filter: blur(22px) saturate(1.5);
+  border-bottom: 1px solid rgb(255 255 255 / 16%);
+  box-shadow: 0 4px 20px rgb(0 0 0 / 14%);
+}
+
+.app-header__bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: min(100%, var(--app-content-width));
+  min-height: 84px;
+  margin-inline: auto;
+  padding: 4px 8px;
+}
+
+app-title {
+  flex: 1 1 auto;
+}
+
+app-view-tabs {
+  width: min(100%, var(--app-content-width));
+  margin-inline: auto;
+}

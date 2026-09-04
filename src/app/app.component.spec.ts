@@ -41,4 +41,11 @@ describe('AppComponent', () => {
     await fixture.whenStable();
     expect(fixture.componentInstance['showBack']()).toBeTrue();
   });
+
+  it('renders the sticky header outside the routed content', () => {
+    const header: HTMLElement = fixture.nativeElement.querySelector('app-header');
+    const main: HTMLElement = fixture.nativeElement.querySelector('main');
+    expect(header).not.toBeNull();
+    expect(main.contains(header)).toBeFalse();
+  });
 });
