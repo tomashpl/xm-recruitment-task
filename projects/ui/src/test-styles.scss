@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+@use 'gallery-ui';
 
 html {
   @include mat.theme((
@@ -13,3 +14,5 @@ html {
 *::after {
   box-sizing: border-box;
 }
+
+@include gallery-ui.styles;

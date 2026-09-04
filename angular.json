@@ -31,7 +31,12 @@
               "src/styles.scss"
             ],
             "scripts": [],
-            "browser": "src/main.ts"
+            "browser": "src/main.ts",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "projects/ui/src/styles"
+              ]
+            }
           },
           "configurations": {
             "production": {
@@ -94,7 +99,12 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "projects/ui/src/styles"
+              ]
+            }
           }
         },
         "lint": {
@@ -133,7 +143,12 @@
             "inlineStyleLanguage": "scss",
             "styles": [
               "projects/ui/src/test-styles.scss"
-            ]
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "projects/ui/src/styles"
+              ]
+            }
           }
         },
         "lint": {
