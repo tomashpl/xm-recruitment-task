@@ -1,0 +1,19 @@
+section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.app-page__header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  margin: 4px 0 -8px;
+}
+
+app-route-chip {
+  margin-inline-start: auto;
+}

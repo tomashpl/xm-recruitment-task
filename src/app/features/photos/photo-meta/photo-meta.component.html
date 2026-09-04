@@ -1,0 +1,7 @@
+@if (author(); as name) {
+  <span class="app-photo-meta__author">{{ name }}</span>
+}
+
+@if (downloadUrl(); as href) {
+  <a [href]="href" target="_blank" rel="noopener noreferrer">Download original</a>
+}
