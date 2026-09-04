@@ -1,0 +1,29 @@
+:host {
+  display: contents;
+}
+
+span {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #fff;
+  transition:
+    width 320ms cubic-bezier(0.34, 1.4, 0.5, 1),
+    height 320ms cubic-bezier(0.34, 1.4, 0.5, 1),
+    background-color 320ms ease-out;
+}
+
+.app-favorite-badge--active {
+  background: var(--mat-sys-error);
+}
+
+.app-favorite-badge--lg {
+  width: 44px;
+  height: 44px;
+}

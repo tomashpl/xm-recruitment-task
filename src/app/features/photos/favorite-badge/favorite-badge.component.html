@@ -1,0 +1,7 @@
+<span
+  aria-hidden="true"
+  [class.app-favorite-badge--lg]="size() === 'lg'"
+  [class.app-favorite-badge--active]="active()"
+>
+  <app-icon [name]="iconName()" [filled]="active()" [size]="iconSize()" />
+</span>
