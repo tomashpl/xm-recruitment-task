@@ -1,27 +1,39 @@
-# GalleryTemplate
+# Gallery Template
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 22.1.7.
+A photo library app built with Angular 22 and Angular Material. It has three screens: an infinite-feeling photostream at `/`, a favourites list at `/favorites`, and a single-photo page at `/photos/:id`.
 
-## Development server
+This is a presentational component library and routing skeleton — there is no backend. Photos are static fixtures (`src/app/shared/fixtures/mock-photos.ts`) whose images are served straight from [picsum.photos](https://picsum.photos). No HTTP calls, persistence, real infinite scroll, or real favourites count exist yet.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Install
 
-## Code scaffolding
+```bash
+npm ci
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Run
+
+```bash
+npm start
+```
+
+Serves the app at `http://localhost:4200`, reloading automatically on source changes.
+
+## Test
+
+```bash
+npm test
+```
+
+Runs the Jasmine/Karma unit tests in watch mode against Chrome. For a single CI-style run:
+
+```bash
+npx ng test --watch=false --browsers=ChromeHeadless
+```
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+npm run build
+```
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io), through the `@angular/build:karma` builder.
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Builds a production bundle into `dist/gallery-template`.
