@@ -1,0 +1,22 @@
+<section aria-labelledby="stream-heading">
+  <div class="app-page__header">
+    <app-section-heading
+      headingId="stream-heading"
+      heading="Random photostream"
+      hint="tap a photo to save it to favorites"
+    />
+    <app-route-chip path="/" />
+  </div>
+
+  <app-photo-grid>
+    @for (photo of photos; track photo.id) {
+      <li animate.enter="app-enter-fade">
+        <app-photo-tile [photo]="photo" (activate)="onActivate($event)" />
+      </li>
+    }
+  </app-photo-grid>
+
+  <div class="app-page__loader">
+    <app-loading-indicator animate.enter="app-enter-slide" />
+  </div>
+</section>

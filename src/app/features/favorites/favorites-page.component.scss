@@ -1,0 +1,23 @@
+.app-page__header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 12px;
+}
+
+app-route-chip {
+  margin-inline-start: auto;
+}
+
+.app-favorites__cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  font-weight: 500;
+  text-decoration: none;
+}
