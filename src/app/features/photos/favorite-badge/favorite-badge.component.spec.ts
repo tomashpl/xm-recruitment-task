@@ -1,6 +1,7 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideGalleryUi } from '@gallery/ui';
 
-import { appConfig } from '../../../app.config';
 import { FavoriteBadgeComponent } from './favorite-badge.component';
 
 describe('FavoriteBadgeComponent', () => {
@@ -11,7 +12,7 @@ describe('FavoriteBadgeComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FavoriteBadgeComponent],
-      providers: [...appConfig.providers],
+      providers: [provideZonelessChangeDetection(), provideGalleryUi()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FavoriteBadgeComponent);

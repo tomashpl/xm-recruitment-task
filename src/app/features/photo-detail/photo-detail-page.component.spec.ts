@@ -1,8 +1,10 @@
 import { Location } from '@angular/common';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { provideGalleryUi } from '@gallery/ui';
 
-import { appConfig } from '../../app.config';
 import { MOCK_DETAIL_PHOTO } from '../../shared/fixtures/mock-photos';
 import { PhotoDetailPageComponent } from './photo-detail-page.component';
 
@@ -11,7 +13,14 @@ describe('PhotoDetailPageComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      providers: [...appConfig.providers],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideRouter(
+          [{ path: 'photos/:id', component: PhotoDetailPageComponent }],
+          withComponentInputBinding(),
+        ),
+        provideGalleryUi(),
+      ],
     });
     harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/photos/ansel', PhotoDetailPageComponent);

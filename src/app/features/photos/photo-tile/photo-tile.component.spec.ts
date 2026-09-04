@@ -1,6 +1,8 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideGalleryUi } from '@gallery/ui';
 
-import { appConfig } from '../../../app.config';
 import { MOCK_PHOTOS } from '../../../shared/fixtures/mock-photos';
 import { PhotoTileComponent } from './photo-tile.component';
 
@@ -11,7 +13,7 @@ describe('PhotoTileComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PhotoTileComponent],
-      providers: [...appConfig.providers],
+      providers: [provideZonelessChangeDetection(), provideRouter([]), provideGalleryUi()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PhotoTileComponent);

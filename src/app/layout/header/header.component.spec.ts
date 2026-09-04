@@ -1,6 +1,8 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideGalleryUi } from '@gallery/ui';
 
-import { appConfig } from '../../app.config';
 import { HeaderComponent } from './header.component';
 
 describe('HeaderComponent', () => {
@@ -9,7 +11,7 @@ describe('HeaderComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HeaderComponent],
-      providers: [...appConfig.providers],
+      providers: [provideZonelessChangeDetection(), provideRouter([]), provideGalleryUi()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderComponent);

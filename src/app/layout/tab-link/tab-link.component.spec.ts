@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { provideGalleryUi } from '@gallery/ui';
 
-import { appConfig } from '../../app.config';
 import { TabLinkComponent } from './tab-link.component';
 
 @Component({
@@ -22,7 +22,11 @@ describe('TabLinkComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HostComponent],
-      providers: [...appConfig.providers],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideRouter([{ path: 'favorites', children: [] }]),
+        provideGalleryUi(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HostComponent);

@@ -1,7 +1,9 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { provideRouter } from '@angular/router';
+import { provideGalleryUi } from '@gallery/ui';
 
-import { appConfig } from '../../app.config';
 import { MOCK_PHOTOS } from '../../shared/fixtures/mock-photos';
 import { PhotoStreamPageComponent } from './photo-stream-page.component';
 
@@ -11,7 +13,7 @@ describe('PhotoStreamPageComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PhotoStreamPageComponent],
-      providers: [...appConfig.providers],
+      providers: [provideZonelessChangeDetection(), provideRouter([]), provideGalleryUi()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PhotoStreamPageComponent);

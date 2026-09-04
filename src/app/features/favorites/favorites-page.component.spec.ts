@@ -1,6 +1,8 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideGalleryUi } from '@gallery/ui';
 
-import { appConfig } from '../../app.config';
 import { MOCK_FAVORITES } from '../../shared/fixtures/mock-photos';
 import { FavoritesPageComponent } from './favorites-page.component';
 
@@ -10,7 +12,7 @@ describe('FavoritesPageComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FavoritesPageComponent],
-      providers: [...appConfig.providers],
+      providers: [provideZonelessChangeDetection(), provideRouter([]), provideGalleryUi()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FavoritesPageComponent);

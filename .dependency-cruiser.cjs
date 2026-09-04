@@ -63,6 +63,13 @@ module.exports = {
       from: { path: '^src/app/features/(favorites|photo-detail|photo-stream)/' },
       to: { path: '^src/app/features/(favorites|photo-detail|photo-stream)/', pathNot: '^src/app/features/$1/' },
     },
+    {
+      name: 'no-upward-imports-to-root',
+      severity: 'error',
+      comment: 'A layer configures itself; only the composition root wires the application together.',
+      from: { path: '^src/app/(layout|features|models|shared)/' },
+      to: { path: '^src/app/[^/]+\\.ts$' },
+    },
   ],
   options: {
     tsConfig: { fileName: 'tsconfig.json' },
