@@ -27,6 +27,21 @@ describe('IconButtonComponent', () => {
     expect(fixture.nativeElement.querySelector('mat-icon').textContent.trim()).toBe('arrow_back');
   });
 
+  it('shrinks the compact variant without shrinking the touch target', async () => {
+    expect(button().getBoundingClientRect().height).toBe(48);
+
+    fixture.componentRef.setInput('size', 'sm');
+    await fixture.whenStable();
+
+    expect(button().getBoundingClientRect().height).toBe(28);
+    expect(fixture.nativeElement.querySelector('mat-icon').style.fontSize).toBe('20px');
+
+    const touchTarget: HTMLElement =
+      fixture.nativeElement.querySelector('.mat-mdc-button-touch-target');
+    expect(getComputedStyle(touchTarget).position).toBe('absolute');
+    expect(touchTarget.getBoundingClientRect().height).toBe(48);
+  });
+
   it('emits activate when clicked', () => {
     const spy = jasmine.createSpy('activate');
     fixture.componentInstance.activate.subscribe(spy);

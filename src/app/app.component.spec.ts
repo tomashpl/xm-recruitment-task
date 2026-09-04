@@ -29,17 +29,11 @@ describe('AppComponent', () => {
     expect(status.getAttribute('aria-live')).toBe('polite');
   });
 
-  it('reports the current url and hides the back affordance outside the detail route', async () => {
-    await TestBed.inject(Router).navigateByUrl('/favorites');
+  it('keeps the shell free of route-specific controls on the detail route', async () => {
+    await TestBed.inject(Router).navigateByUrl('/photos/ansel');
     await fixture.whenStable();
-    expect(fixture.componentInstance['url']()).toBe('/favorites');
-    expect(fixture.componentInstance['showBack']()).toBeFalse();
-  });
-
-  it('shows the back affordance on the detail route', async () => {
-    await TestBed.inject(Router).navigateByUrl('/photos/abc');
-    await fixture.whenStable();
-    expect(fixture.componentInstance['showBack']()).toBeTrue();
+    const header: HTMLElement = fixture.nativeElement.querySelector('app-header');
+    expect(header.querySelector('button[aria-label="Go back"]')).toBeNull();
   });
 
   it('renders the sticky header outside the routed content', () => {

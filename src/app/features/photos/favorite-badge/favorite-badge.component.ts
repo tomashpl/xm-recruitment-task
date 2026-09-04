@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { IconComponent } from '../../../ui/icon/icon.component';
 
@@ -11,8 +11,5 @@ import { IconComponent } from '../../../ui/icon/icon.component';
 })
 export class FavoriteBadgeComponent {
   readonly active = input(false);
-  readonly size = input<'sm' | 'lg'>('sm');
-
-  protected readonly iconName = computed(() => (this.active() ? 'favorite' : 'favorite_border'));
-  protected readonly iconSize = computed(() => (this.size() === 'lg' ? 28 : 18));
+  readonly expanded = input(false);
 }

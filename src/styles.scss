@@ -4,6 +4,9 @@
 
 html {
   color-scheme: dark;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mat-sys-primary) transparent;
 
   @include mat.theme((
     color: (primary: mat.$azure-palette, tertiary: mat.$orange-palette),
@@ -26,6 +29,26 @@ html {
     inverse-surface: #eae2b7,
     inverse-on-surface: #00263a,
   ));
+}
+
+html::-webkit-scrollbar {
+  width: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--mat-sys-primary) 72%, transparent);
+  background-clip: content-box;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: var(--mat-sys-primary);
+  background-clip: content-box;
 }
 
 *,
@@ -79,8 +102,10 @@ app-photo-grid li {
   gap: 8px;
 }
 
-app-route-chip {
-  margin-inline-start: auto;
+button[data-variant] .mdc-button__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .app-snackbar-panel {

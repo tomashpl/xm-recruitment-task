@@ -9,8 +9,12 @@
     [attr.aria-label]="label()"
     [attr.aria-pressed]="favorite()"
     (click)="activate.emit(photo())"
+    (mouseenter)="setEngaged(true)"
+    (mouseleave)="setEngaged(false)"
+    (focus)="setEngaged(true)"
+    (blur)="setEngaged(false)"
   >
     <app-photo-thumb [photo]="photo()" [overlay]="favorite()" />
-    <app-favorite-badge [active]="favorite()" />
+    <app-favorite-badge [active]="favorite()" [expanded]="engaged()" />
   </button>
 }

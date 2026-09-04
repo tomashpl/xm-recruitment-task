@@ -8,5 +8,4 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 })
 export class PhotoMetaComponent {
   readonly author = input<string | undefined>(undefined);
-  readonly downloadUrl = input<string | undefined>(undefined);
 }

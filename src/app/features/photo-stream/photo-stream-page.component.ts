@@ -4,7 +4,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Photo } from '../../models/photo.model';
 import { MOCK_PHOTOS } from '../../shared/fixtures/mock-photos';
 import { LoadingIndicatorComponent } from '../../ui/loading-indicator/loading-indicator.component';
-import { RouteChipComponent } from '../../ui/route-chip/route-chip.component';
 import { SectionHeadingComponent } from '../../ui/section-heading/section-heading.component';
 import { SnackbarData, SnackbarComponent } from '../../ui/snackbar/snackbar.component';
 import { PhotoGridComponent } from '../photos/photo-grid/photo-grid.component';
@@ -14,7 +13,6 @@ import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
   selector: 'app-photo-stream-page',
   imports: [
     SectionHeadingComponent,
-    RouteChipComponent,
     PhotoGridComponent,
     PhotoTileComponent,
     LoadingIndicatorComponent,

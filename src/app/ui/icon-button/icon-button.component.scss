@@ -7,3 +7,12 @@ button {
   height: 48px;
   color: var(--mat-sys-on-surface-variant);
 }
+
+button.app-icon-button--sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+}

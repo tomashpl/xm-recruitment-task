@@ -23,6 +23,13 @@ describe('global theme', () => {
     });
   }
 
+  it('themes the scrollbar and reserves its gutter so a growing page never reflows the grid', () => {
+    expect(root().scrollbarWidth).toBe('thin');
+    expect(root().scrollbarGutter).toBe('stable');
+    expect(root().scrollbarColor).not.toBe('auto');
+    expect(root().scrollbarColor).toContain('rgb(252, 191, 73)');
+  });
+
   it('exposes the application tokens Material does not model', () => {
     expect(root().getPropertyValue('--app-photo-mat').trim().toLowerCase()).toBe('#00131d');
     expect(root().getPropertyValue('--app-tile').trim().toLowerCase()).toBe('#052e42');

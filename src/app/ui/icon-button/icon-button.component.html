@@ -1,3 +1,9 @@
-<button type="button" matIconButton [attr.aria-label]="label()" (click)="activate.emit()">
-  <app-icon [name]="icon()" />
+<button
+  type="button"
+  matIconButton
+  [class.app-icon-button--sm]="size() === 'sm'"
+  [attr.aria-label]="label()"
+  (click)="activate.emit()"
+>
+  <app-icon [name]="icon()" [size]="iconSize()" />
 </button>

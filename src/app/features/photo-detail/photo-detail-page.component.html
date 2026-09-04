@@ -2,8 +2,8 @@
   <h2 id="detail-heading" class="visually-hidden">Single photo</h2>
 
   <div class="app-page__header">
-    <app-photo-meta [author]="photo().author" [downloadUrl]="photo().downloadUrl" />
-    <app-route-chip [path]="routePath()" />
+    <app-icon-button icon="arrow_back" label="Go back" size="sm" (activate)="goBack()" />
+    <app-photo-meta [author]="photo().author" />
   </div>
 
   <app-photo-stage [photo]="photo()" animate.enter="app-enter-fade" />

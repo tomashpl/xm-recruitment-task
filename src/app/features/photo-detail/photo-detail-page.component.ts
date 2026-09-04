@@ -1,20 +1,23 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { Location } from '@angular/common';
 
 import { Photo } from '../../models/photo.model';
 import { MOCK_DETAIL_PHOTO, MOCK_PHOTOS } from '../../shared/fixtures/mock-photos';
 import { ButtonComponent } from '../../ui/button/button.component';
-import { RouteChipComponent } from '../../ui/route-chip/route-chip.component';
+import { IconButtonComponent } from '../../ui/icon-button/icon-button.component';
 import { PhotoMetaComponent } from '../photos/photo-meta/photo-meta.component';
 import { PhotoStageComponent } from '../photos/photo-stage/photo-stage.component';
 
 @Component({
   selector: 'app-photo-detail-page',
-  imports: [PhotoStageComponent, PhotoMetaComponent, RouteChipComponent, ButtonComponent],
+  imports: [PhotoStageComponent, PhotoMetaComponent, ButtonComponent, IconButtonComponent],
   templateUrl: './photo-detail-page.component.html',
   styleUrl: './photo-detail-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhotoDetailPageComponent {
+  private readonly location = inject(Location);
+
   readonly id = input.required<string>();
 
   protected readonly photo = computed<Photo>(() => {
@@ -33,5 +36,7 @@ export class PhotoDetailPageComponent {
     };
   });
 
-  protected readonly routePath = computed(() => `/photos/${this.id()}`);
+  protected goBack(): void {
+    this.location.back();
+  }
 }

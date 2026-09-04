@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { Photo } from '../../../models/photo.model';
@@ -21,6 +21,8 @@ export class PhotoTileComponent {
 
   readonly activate = output<Photo>();
 
+  protected readonly engaged = signal(false);
+
   protected readonly isLink = computed(() => this.interaction() === 'link');
   protected readonly detailLink = computed(() => ['/photos', this.photo().id]);
 
@@ -31,4 +33,8 @@ export class PhotoTileComponent {
     }
     return this.favorite() ? `Remove ${alt} from favorites` : `Add ${alt} to favorites`;
   });
+
+  protected setEngaged(engaged: boolean): void {
+    this.engaged.set(engaged);
+  }
 }

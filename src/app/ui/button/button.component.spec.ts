@@ -51,6 +51,22 @@ describe('ButtonComponent', () => {
     expect(fixture.nativeElement.querySelector('app-icon')).not.toBeNull();
   });
 
+  it('lays the icon out beside the label instead of letting Material stack it on the baseline', async () => {
+    fixture.componentRef.setInput('icon', 'heart_minus');
+    await fixture.whenStable();
+
+    const label: HTMLElement = fixture.nativeElement.querySelector('.mdc-button__label');
+    const labelStyle = getComputedStyle(label);
+    expect(labelStyle.display).toBe('flex');
+    expect(labelStyle.alignItems).toBe('center');
+    expect(labelStyle.columnGap).toBe('10px');
+
+    const iconBox = fixture.nativeElement.querySelector('mat-icon').getBoundingClientRect();
+    const buttonBox = button().getBoundingClientRect();
+    const offset = (iconBox.top + iconBox.bottom) / 2 - (buttonBox.top + buttonBox.bottom) / 2;
+    expect(Math.abs(offset)).toBeLessThan(1.5);
+  });
+
   it('exposes an accessible name when a label is given', async () => {
     fixture.componentRef.setInput('label', 'Remove from favorites');
     await fixture.whenStable();

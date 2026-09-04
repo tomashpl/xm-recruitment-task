@@ -25,22 +25,8 @@ describe('HeaderComponent', () => {
     expect(fixture.nativeElement.querySelector('app-view-tabs')).not.toBeNull();
   });
 
-  it('hides the back control by default', () => {
+  it('carries no back control because the detail page owns it', () => {
     expect(fixture.nativeElement.querySelector('app-icon-button')).toBeNull();
-  });
-
-  it('shows the back control when asked', async () => {
-    fixture.componentRef.setInput('showBack', true);
-    await fixture.whenStable();
-    expect(fixture.nativeElement.querySelector('button[aria-label="Go back"]')).not.toBeNull();
-  });
-
-  it('emits back when the control is pressed', async () => {
-    fixture.componentRef.setInput('showBack', true);
-    await fixture.whenStable();
-    const spy = jasmine.createSpy('back');
-    fixture.componentInstance.back.subscribe(spy);
-    fixture.nativeElement.querySelector('button[aria-label="Go back"]').click();
-    expect(spy).toHaveBeenCalledTimes(1);
+    expect(fixture.nativeElement.querySelector('button[aria-label="Go back"]')).toBeNull();
   });
 });

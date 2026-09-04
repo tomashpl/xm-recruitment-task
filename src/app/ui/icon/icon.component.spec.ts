@@ -27,6 +27,16 @@ describe('IconComponent', () => {
     expect(fixture.nativeElement.querySelector('mat-icon').getAttribute('aria-hidden')).toBe('true');
   });
 
+  it('never transitions its own geometry, so a freshly rendered icon cannot animate in from the Material default size', () => {
+    const icon: HTMLElement = fixture.nativeElement.querySelector('mat-icon');
+    const transitioned = getComputedStyle(icon)
+      .transitionProperty.split(',')
+      .map(property => property.trim());
+    expect(transitioned).not.toContain('font-size');
+    expect(transitioned).not.toContain('width');
+    expect(transitioned).not.toContain('height');
+  });
+
   it('switches to the filled variation when asked', async () => {
     fixture.componentRef.setInput('filled', true);
     await fixture.whenStable();

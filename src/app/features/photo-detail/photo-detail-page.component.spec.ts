@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingHarness } from '@angular/router/testing';
 
@@ -26,15 +27,37 @@ describe('PhotoDetailPageComponent', () => {
     expect(button.textContent).toContain('Remove from favorites');
   });
 
-  it('shows the author and the download link from the fixture', () => {
+  it('shows the author from the fixture', () => {
     const meta: HTMLElement = harness.routeNativeElement!.querySelector('app-photo-meta')!;
     expect(meta.textContent).toContain(MOCK_DETAIL_PHOTO.author!);
-    expect(meta.querySelector('a')!.getAttribute('href')).toBe(MOCK_DETAIL_PHOTO.downloadUrl!);
   });
 
-  it('shows the parameterised route in the chip', () => {
-    expect(harness.routeNativeElement!.querySelector('app-route-chip')!.textContent!.trim())
-      .toBe('/photos/ansel');
+  it('puts the back control ahead of the author', () => {
+    const header: HTMLElement = harness.routeNativeElement!.querySelector('.app-page__header')!;
+    const children = Array.from(header.children).map(child => child.tagName.toLowerCase());
+    expect(children.indexOf('app-icon-button')).toBe(0);
+    expect(children.indexOf('app-icon-button')).toBeLessThan(children.indexOf('app-photo-meta'));
+  });
+
+  it('keeps the header row as tall as it would be without the back control', () => {
+    const header: HTMLElement = harness.routeNativeElement!.querySelector('.app-page__header')!;
+    const back: HTMLElement = header.querySelector('app-icon-button')!;
+    const tallestSibling = Math.max(
+      ...Array.from(header.children)
+        .filter(child => child !== back)
+        .map(child => child.getBoundingClientRect().height),
+    );
+
+    expect(back.getBoundingClientRect().height).toBeLessThanOrEqual(tallestSibling);
+    expect(header.getBoundingClientRect().height).toBe(tallestSibling);
+  });
+
+  it('walks the history back when the back control is pressed', () => {
+    const spy = spyOn(TestBed.inject(Location), 'back');
+    const button: HTMLButtonElement =
+      harness.routeNativeElement!.querySelector('button[aria-label="Go back"]')!;
+    button.click();
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 
   it('names the section for assistive technology without showing a visible heading', () => {

@@ -60,6 +60,35 @@ describe('PhotoTileComponent', () => {
     fixture.componentRef.setInput('favorite', false);
     await fixture.whenStable();
     const icon: HTMLElement = fixture.nativeElement.querySelector('mat-icon');
-    expect(icon.textContent.trim()).toBe('favorite_border');
+    expect(icon.classList).not.toContain('app-icon--filled');
+  });
+
+  it('expands the badge while the toggle variant is hovered or focused', async () => {
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+    const badge = (): HTMLElement => fixture.nativeElement.querySelector('app-favorite-badge span');
+    expect(badge().classList).not.toContain('app-favorite-badge--expanded');
+
+    button.dispatchEvent(new MouseEvent('mouseenter'));
+    await fixture.whenStable();
+    expect(badge().classList).toContain('app-favorite-badge--expanded');
+
+    button.dispatchEvent(new MouseEvent('mouseleave'));
+    await fixture.whenStable();
+    expect(badge().classList).not.toContain('app-favorite-badge--expanded');
+
+    button.dispatchEvent(new FocusEvent('focus'));
+    await fixture.whenStable();
+    expect(badge().classList).toContain('app-favorite-badge--expanded');
+  });
+
+  it('leaves the badge static in the link variant', async () => {
+    fixture.componentRef.setInput('interaction', 'link');
+    fixture.componentRef.setInput('favorite', true);
+    await fixture.whenStable();
+    const anchor: HTMLAnchorElement = fixture.nativeElement.querySelector('a');
+    anchor.dispatchEvent(new MouseEvent('mouseenter'));
+    await fixture.whenStable();
+    const badge: HTMLElement = fixture.nativeElement.querySelector('app-favorite-badge span');
+    expect(badge.classList).not.toContain('app-favorite-badge--expanded');
   });
 });

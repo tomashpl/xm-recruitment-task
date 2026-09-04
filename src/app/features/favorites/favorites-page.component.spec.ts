@@ -37,8 +37,4 @@ describe('FavoritesPageComponent', () => {
     expect(fixture.nativeElement.querySelector('app-empty-state')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('app-photo-grid')).toBeNull();
   });
-
-  it('shows the current route in the chip', () => {
-    expect(fixture.nativeElement.querySelector('app-route-chip').textContent.trim()).toBe('/favorites');
-  });
 });

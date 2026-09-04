@@ -36,10 +36,6 @@ describe('PhotoStreamPageComponent', () => {
     expect(fixture.nativeElement.querySelector('app-loading-indicator')).not.toBeNull();
   });
 
-  it('shows the current route in the chip', () => {
-    expect(fixture.nativeElement.querySelector('app-route-chip').textContent.trim()).toBe('/');
-  });
-
   it('opens a snackbar when a tile is activated', () => {
     const snackBar = TestBed.inject(MatSnackBar);
     const spy = spyOn(snackBar, 'openFromComponent').and.callThrough();
