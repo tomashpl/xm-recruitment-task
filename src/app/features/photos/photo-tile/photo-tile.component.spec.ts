@@ -60,7 +60,7 @@ describe('PhotoTileComponent', () => {
     fixture.componentRef.setInput('favorite', false);
     await fixture.whenStable();
     const icon: HTMLElement = fixture.nativeElement.querySelector('mat-icon');
-    expect(icon.classList).not.toContain('app-icon--filled');
+    expect(icon.classList).not.toContain('ui-icon--filled');
   });
 
   it('expands the badge while the toggle variant is hovered or focused', async () => {

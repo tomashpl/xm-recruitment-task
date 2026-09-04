@@ -1,7 +1,8 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { appConfig } from '../../app.config';
 import { IconComponent } from './icon.component';
+import { provideGalleryUi } from '../provide-gallery-ui';
 
 describe('IconComponent', () => {
   let fixture: ComponentFixture<IconComponent>;
@@ -9,7 +10,7 @@ describe('IconComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [IconComponent],
-      providers: [...appConfig.providers],
+      providers: [provideZonelessChangeDetection(), provideGalleryUi()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(IconComponent);
@@ -40,6 +41,6 @@ describe('IconComponent', () => {
   it('switches to the filled variation when asked', async () => {
     fixture.componentRef.setInput('filled', true);
     await fixture.whenStable();
-    expect(fixture.nativeElement.querySelector('mat-icon').classList).toContain('app-icon--filled');
+    expect(fixture.nativeElement.querySelector('mat-icon').classList).toContain('ui-icon--filled');
   });
 });

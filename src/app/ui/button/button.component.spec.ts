@@ -45,10 +45,10 @@ describe('ButtonComponent', () => {
   });
 
   it('renders a leading icon only when one is given', async () => {
-    expect(fixture.nativeElement.querySelector('app-icon')).toBeNull();
+    expect(fixture.nativeElement.querySelector('ui-icon')).toBeNull();
     fixture.componentRef.setInput('icon', 'favorite');
     await fixture.whenStable();
-    expect(fixture.nativeElement.querySelector('app-icon')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('ui-icon')).not.toBeNull();
   });
 
   it('lays the icon out beside the label instead of letting Material stack it on the baseline', async () => {

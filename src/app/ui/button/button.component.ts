@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent } from '@gallery/ui';
 
 export type ButtonVariant = 'filled' | 'tonal' | 'danger';
 

@@ -1,1 +1,2 @@
-export * from './lib/ui';
+export * from './lib/provide-gallery-ui';
+export * from './lib/icon/icon.component';

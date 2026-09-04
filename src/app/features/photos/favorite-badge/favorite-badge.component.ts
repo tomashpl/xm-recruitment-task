@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { IconComponent } from '../../../ui/icon/icon.component';
+import { IconComponent } from '@gallery/ui';
 
 @Component({
   selector: 'app-favorite-badge',

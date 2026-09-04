@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input, signal } from '@an
 import { MatRippleModule } from '@angular/material/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
-import { IconComponent } from '../../ui/icon/icon.component';
+import { IconComponent } from '@gallery/ui';
 
 @Component({
   selector: 'app-tab-link',
