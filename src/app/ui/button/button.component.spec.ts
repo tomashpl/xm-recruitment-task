@@ -1,4 +1,3 @@
-import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { appConfig } from '../../app.config';
@@ -28,6 +27,14 @@ describe('ButtonComponent', () => {
     expect(button().getAttribute('data-variant')).toBe('danger');
     expect(button().classList).toContain('app-button--danger');
     expect(fixture.componentInstance['matVariant']()).toBe('filled');
+  });
+
+  it('gives the danger variant a background colour that overrides the default filled Material colour', async () => {
+    const filledBackground = getComputedStyle(button()).backgroundColor;
+    fixture.componentRef.setInput('variant', 'danger');
+    await fixture.whenStable();
+    const dangerBackground = getComputedStyle(button()).backgroundColor;
+    expect(dangerBackground).not.toBe(filledBackground);
   });
 
   it('maps the tonal variant onto a tonal Material button', async () => {

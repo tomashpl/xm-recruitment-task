@@ -11,7 +11,7 @@ button {
   letter-spacing: 0.1px;
 }
 
-.app-button--danger {
+button.app-button--danger:not(:disabled) {
   background: var(--mat-sys-error);
   color: var(--mat-sys-on-error);
 }
