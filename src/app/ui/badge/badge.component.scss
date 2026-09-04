@@ -1,0 +1,23 @@
+:host {
+  display: inline-flex;
+}
+
+span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--mat-sys-surface-container);
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.app-badge--active {
+  background: var(--mat-sys-on-primary);
+  color: var(--mat-sys-primary);
+}

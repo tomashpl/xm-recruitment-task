@@ -1,0 +1,15 @@
+:host {
+  display: inline-flex;
+}
+
+code {
+  padding: 4px 12px;
+  border: 1px solid var(--mat-sys-outline);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--mat-sys-surface) 82%, transparent);
+  color: var(--mat-sys-on-surface-variant);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 20px;
+  white-space: nowrap;
+}
