@@ -32,7 +32,7 @@ describe('PhotoDetailPageComponent', () => {
   });
 
   it('offers the remove from favorites action', () => {
-    const button: HTMLButtonElement = harness.routeNativeElement!.querySelector('app-button button')!;
+    const button: HTMLButtonElement = harness.routeNativeElement!.querySelector('ui-button button')!;
     expect(button.textContent).toContain('Remove from favorites');
   });
 
@@ -44,13 +44,13 @@ describe('PhotoDetailPageComponent', () => {
   it('puts the back control ahead of the author', () => {
     const header: HTMLElement = harness.routeNativeElement!.querySelector('.app-page__header')!;
     const children = Array.from(header.children).map(child => child.tagName.toLowerCase());
-    expect(children.indexOf('app-icon-button')).toBe(0);
-    expect(children.indexOf('app-icon-button')).toBeLessThan(children.indexOf('app-photo-meta'));
+    expect(children.indexOf('ui-icon-button')).toBe(0);
+    expect(children.indexOf('ui-icon-button')).toBeLessThan(children.indexOf('app-photo-meta'));
   });
 
   it('keeps the header row as tall as it would be without the back control', () => {
     const header: HTMLElement = harness.routeNativeElement!.querySelector('.app-page__header')!;
-    const back: HTMLElement = header.querySelector('app-icon-button')!;
+    const back: HTMLElement = header.querySelector('ui-icon-button')!;
     const tallestSibling = Math.max(
       ...Array.from(header.children)
         .filter(child => child !== back)

@@ -1,11 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { LoadingIndicatorComponent, SectionHeadingComponent, SnackbarComponent, SnackbarData } from '@gallery/ui';
 
 import { Photo } from '../../models/photo.model';
 import { MOCK_PHOTOS } from '../../shared/fixtures/mock-photos';
-import { LoadingIndicatorComponent } from '../../ui/loading-indicator/loading-indicator.component';
-import { SectionHeadingComponent } from '../../ui/section-heading/section-heading.component';
-import { SnackbarData, SnackbarComponent } from '../../ui/snackbar/snackbar.component';
 import { PhotoGridComponent } from '../photos/photo-grid/photo-grid.component';
 import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
 

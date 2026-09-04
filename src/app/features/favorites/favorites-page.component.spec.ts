@@ -30,13 +30,13 @@ describe('FavoritesPageComponent', () => {
   });
 
   it('hides the empty state while favorites exist', () => {
-    expect(fixture.nativeElement.querySelector('app-empty-state')).toBeNull();
+    expect(fixture.nativeElement.querySelector('ui-empty-state')).toBeNull();
   });
 
   it('shows the empty state and hides the grid when there are none', async () => {
     fixture.componentInstance['favorites'].set([]);
     await fixture.whenStable();
-    expect(fixture.nativeElement.querySelector('app-empty-state')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('ui-empty-state')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('app-photo-grid')).toBeNull();
   });
 });

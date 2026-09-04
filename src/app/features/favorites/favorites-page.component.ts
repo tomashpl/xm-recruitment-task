@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { EmptyStateComponent, SectionHeadingComponent } from '@gallery/ui';
 
 import { Photo } from '../../models/photo.model';
 import { MOCK_FAVORITES } from '../../shared/fixtures/mock-photos';
-import { EmptyStateComponent } from '../../ui/empty-state/empty-state.component';
-import { SectionHeadingComponent } from '../../ui/section-heading/section-heading.component';
 import { PhotoGridComponent } from '../photos/photo-grid/photo-grid.component';
 import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
 

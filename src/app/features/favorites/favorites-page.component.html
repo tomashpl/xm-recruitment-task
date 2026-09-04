@@ -1,6 +1,6 @@
 <section aria-labelledby="favorites-heading">
   <div class="app-page__header">
-    <app-section-heading
+    <ui-section-heading
       headingId="favorites-heading"
       heading="Favorites"
       hint="tap a photo to open it"
@@ -8,12 +8,12 @@
   </div>
 
   @if (favorites().length === 0) {
-    <app-empty-state
+    <ui-empty-state
       icon="favorite_border"
       message="No favorites yet. Photos you tap in the photostream show up here."
     >
       <a routerLink="/" class="app-favorites__cta">Browse photos</a>
-    </app-empty-state>
+    </ui-empty-state>
   } @else {
     <app-photo-grid>
       @for (photo of favorites(); track photo.id) {

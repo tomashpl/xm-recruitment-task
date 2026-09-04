@@ -31,6 +31,6 @@ describe('ViewTabsComponent', () => {
   it('shows the favorites count in the badge', async () => {
     fixture.componentRef.setInput('favoritesCount', 4);
     await fixture.whenStable();
-    expect(fixture.nativeElement.querySelector('app-badge').textContent.trim()).toBe('4');
+    expect(fixture.nativeElement.querySelector('ui-badge').textContent.trim()).toBe('4');
   });
 });

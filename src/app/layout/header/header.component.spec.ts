@@ -28,7 +28,7 @@ describe('HeaderComponent', () => {
   });
 
   it('carries no back control because the detail page owns it', () => {
-    expect(fixture.nativeElement.querySelector('app-icon-button')).toBeNull();
+    expect(fixture.nativeElement.querySelector('ui-icon-button')).toBeNull();
     expect(fixture.nativeElement.querySelector('button[aria-label="Go back"]')).toBeNull();
   });
 });

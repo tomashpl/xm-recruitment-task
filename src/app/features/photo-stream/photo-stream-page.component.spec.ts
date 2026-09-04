@@ -34,7 +34,7 @@ describe('PhotoStreamPageComponent', () => {
   });
 
   it('shows the loading indicator beneath the grid', () => {
-    expect(fixture.nativeElement.querySelector('app-loading-indicator')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('ui-loading-indicator')).not.toBeNull();
   });
 
   it('opens a snackbar when a tile is activated', () => {
