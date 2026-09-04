@@ -15,7 +15,12 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022"
+    "module": "ES2022",
+    "paths": {
+      "@gallery/ui": [
+        "./projects/ui/src/public-api.ts"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -25,7 +30,17 @@
   },
   "files": [],
   "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.spec.json" }
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/ui/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/ui/tsconfig.spec.json"
+    }
   ]
 }
