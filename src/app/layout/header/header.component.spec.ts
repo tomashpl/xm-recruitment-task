@@ -32,7 +32,7 @@ describe('HeaderComponent', () => {
   it('shows the back control when asked', async () => {
     fixture.componentRef.setInput('showBack', true);
     await fixture.whenStable();
-    expect(fixture.nativeElement.querySelector('button[aria-label="Back to favorites"]')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('button[aria-label="Go back"]')).not.toBeNull();
   });
 
   it('emits back when the control is pressed', async () => {
@@ -40,7 +40,7 @@ describe('HeaderComponent', () => {
     await fixture.whenStable();
     const spy = jasmine.createSpy('back');
     fixture.componentInstance.back.subscribe(spy);
-    fixture.nativeElement.querySelector('button[aria-label="Back to favorites"]').click();
+    fixture.nativeElement.querySelector('button[aria-label="Go back"]').click();
     expect(spy).toHaveBeenCalledTimes(1);
   });
 });

@@ -42,4 +42,13 @@ describe('PhotoDetailPageComponent', () => {
     expect(heading.textContent!.trim()).toBe('Single photo');
     expect(heading.classList).toContain('visually-hidden');
   });
+
+  it('renders a different photo for a different route id', async () => {
+    const firstSrc = harness.routeNativeElement!.querySelector('img')!.getAttribute('src');
+
+    await harness.navigateByUrl('/photos/berlin', PhotoDetailPageComponent);
+    const secondSrc = harness.routeNativeElement!.querySelector('img')!.getAttribute('src');
+
+    expect(secondSrc).not.toBe(firstSrc);
+  });
 });

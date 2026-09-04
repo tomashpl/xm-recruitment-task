@@ -72,6 +72,17 @@ app-photo-grid li {
   list-style: none;
 }
 
+.app-page__header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+app-route-chip {
+  margin-inline-start: auto;
+}
+
 .app-snackbar-panel {
   --mat-snack-bar-container-color: var(--mat-sys-inverse-surface);
   --mat-snack-bar-supporting-text-color: var(--mat-sys-inverse-on-surface);

@@ -1,13 +1,5 @@
 .app-page__header {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
   margin: 4px 0 12px;
-}
-
-app-route-chip {
-  margin-inline-start: auto;
 }
 
 .app-page__loader {

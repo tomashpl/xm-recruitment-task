@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { Photo } from '../../models/photo.model';
@@ -26,7 +26,7 @@ import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
 export class PhotoStreamPageComponent {
   private readonly snackBar = inject(MatSnackBar);
 
-  protected readonly photos = MOCK_PHOTOS;
+  protected readonly photos = signal<readonly Photo[]>(MOCK_PHOTOS);
 
   protected onActivate(photo: Photo): void {
     this.snackBar.openFromComponent(SnackbarComponent, {

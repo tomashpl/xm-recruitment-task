@@ -9,7 +9,7 @@
   </div>
 
   <app-photo-grid>
-    @for (photo of photos; track photo.id) {
+    @for (photo of photos(); track photo.id) {
       <li animate.enter="app-enter-fade">
         <app-photo-tile [photo]="photo" (activate)="onActivate($event)" />
       </li>

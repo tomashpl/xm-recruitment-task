@@ -1,6 +1,6 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { Router, provideRouter } from '@angular/router';
+import { Router, provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 
 import { routes } from './app.routes';
@@ -11,7 +11,7 @@ import { PhotoStreamPageComponent } from './features/photo-stream/photo-stream-p
 describe('routes', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideZonelessChangeDetection(), provideRouter(routes)],
+      providers: [provideZonelessChangeDetection(), provideRouter(routes, withComponentInputBinding())],
     });
   });
 

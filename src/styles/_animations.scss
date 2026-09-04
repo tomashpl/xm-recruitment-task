@@ -10,7 +10,6 @@
 
 .app-enter-fade { animation: app-fade-in 240ms ease-out; }
 .app-enter-slide { animation: app-slide-up 180ms ease-out; }
-.app-leave-fade { animation: app-fade-in 160ms ease-in reverse; }
 
 @media (prefers-reduced-motion: reduce) {
   *,
