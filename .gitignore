@@ -51,6 +51,10 @@ CLAUDE.md
 docs/
 .superpowers/
 
+# Machine-local tooling config; the second entry overrides the .vscode whitelist above
+.mcp.json
+.vscode/launch.json
+
 ### *** required entries below ***
 ###
 ### Please do not add anything below this line, your changes will be overwritten
