@@ -1,0 +1,13 @@
+<button
+  type="button"
+  [matButton]="matVariant()"
+  [attr.data-variant]="variant()"
+  [class.app-button--danger]="variant() === 'danger'"
+  [attr.aria-label]="label()"
+  (click)="activate.emit()"
+>
+  @if (icon(); as iconName) {
+    <app-icon [name]="iconName" [size]="20" />
+  }
+  <ng-content />
+</button>

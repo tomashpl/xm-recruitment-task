@@ -1,0 +1,14 @@
+:host {
+  display: inline-flex;
+  line-height: 1;
+}
+
+mat-icon {
+  overflow: visible;
+  font-variation-settings: 'FILL' 0;
+  transition: font-variation-settings 200ms ease-out;
+}
+
+.app-icon--filled {
+  font-variation-settings: 'FILL' 1;
+}
