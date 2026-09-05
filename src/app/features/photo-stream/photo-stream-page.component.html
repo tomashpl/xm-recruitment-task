@@ -8,20 +8,20 @@
     <app-grid-layout-toggle [layout]="layout()" (layoutChange)="onLayoutChange($event)" />
   </div>
 
-  @if (photos.isLoading()) {
+  @if (store.isLoadingFirstPage()) {
     <div class="app-page__loader">
       <ui-loading-indicator animate.enter="app-enter-slide" />
     </div>
-  } @else if (photos.error()) {
+  } @else if (store.fatalError()) {
     <ui-empty-state
       icon="cloud_off"
       message="Could not load photos. Check your connection and try again."
     >
-      <ui-button icon="refresh" (activate)="photos.reload()">Try again</ui-button>
+      <ui-button icon="refresh" (activate)="store.retry()">Try again</ui-button>
     </ui-empty-state>
   } @else {
     <app-photo-grid #grid [layout]="layout()">
-      @for (photo of photos.value(); track photo.id) {
+      @for (photo of store.photos(); track photo.id) {
         <li animate.enter="app-enter-fade" [style.grid-row-end]="grid.spanFor(photo)">
           <app-photo-tile
             [photo]="photo"
@@ -31,5 +31,18 @@
         </li>
       }
     </app-photo-grid>
+
+    @if (store.inlineError()) {
+      <div class="app-stream__more">
+        <p class="app-stream__note" role="alert">Could not load more photos.</p>
+        <ui-button icon="refresh" (activate)="store.retry()">Try again</ui-button>
+      </div>
+    } @else if (store.isComplete()) {
+      <p class="app-stream__note app-stream__note--end" role="status">
+        You’ve reached the end of the collection.
+      </p>
+    } @else {
+      <app-stream-sentinel [loading]="store.isLoadingMore()" (activate)="store.loadNext()" />
+    }
   }
 </section>

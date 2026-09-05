@@ -1,0 +1,7 @@
+@if (loading()) {
+  <ui-loading-indicator message="Loading more photos…" />
+}
+
+<ui-button class="visually-hidden" icon="expand_more" (activate)="activate.emit()">
+  Load more
+</ui-button>

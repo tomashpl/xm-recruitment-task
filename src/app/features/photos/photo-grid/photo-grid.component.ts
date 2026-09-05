@@ -27,7 +27,9 @@ const UNMEASURED: GridMetrics = { columnWidth: 0, gap: 0, rowUnit: 0 };
 export class PhotoGridComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly list = viewChild.required<ElementRef<HTMLUListElement>>('list');
-  private readonly measured = signal<GridMetrics>(UNMEASURED);
+  private readonly measured = signal<GridMetrics>(UNMEASURED, {
+    equal: (a, b) => a.columnWidth === b.columnWidth && a.gap === b.gap && a.rowUnit === b.rowUnit,
+  });
 
   readonly layout = input<GridLayout>('square');
 
@@ -53,7 +55,7 @@ export class PhotoGridComponent {
     this.measured.set({
       columnWidth: item?.getBoundingClientRect().width ?? 0,
       gap: parseFloat(styles.columnGap) || 0,
-      rowUnit: parseFloat(styles.gridAutoRows) || 0,
+      rowUnit: parseFloat(styles.getPropertyValue('--app-masonry-row-unit')) || 0,
     });
   }
 

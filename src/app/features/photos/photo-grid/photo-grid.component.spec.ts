@@ -122,4 +122,14 @@ describe('PhotoGridComponent', () => {
     await fixture.whenStable();
     expect(grid().ratioFor(fixture.componentInstance.photos()[1])).toBe('400 / 600');
   });
+
+  it('computes spans as soon as the layout switches, without waiting to be measured again', async () => {
+    fixture.componentInstance.layout.set('masonry');
+    await fixture.whenStable();
+
+    const landscape = fixture.componentInstance.photos()[0];
+    const span = masonrySpan(landscape, grid().metrics());
+
+    expect(span).toBeGreaterThan(1);
+  });
 });

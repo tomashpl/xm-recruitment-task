@@ -2,6 +2,7 @@ $masonry-row-unit: 4px;
 
 :host {
   display: block;
+  --app-masonry-row-unit: #{$masonry-row-unit};
 }
 
 ul {
@@ -14,6 +15,6 @@ ul {
 }
 
 :host(.app-photo-grid--masonry) ul {
-  grid-auto-rows: $masonry-row-unit;
+  grid-auto-rows: var(--app-masonry-row-unit);
   row-gap: 0;
 }
