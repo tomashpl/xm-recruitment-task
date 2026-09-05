@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
 
+export const SNACKBAR_PANEL_CLASS = 'ui-snackbar-panel';
+
 export interface SnackbarData {
   readonly message: string;
   readonly actionLabel?: string;

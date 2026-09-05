@@ -1,6 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { LoadingIndicatorComponent, SectionHeadingComponent, SnackbarComponent, SnackbarData } from '@gallery/ui';
+import {
+  LoadingIndicatorComponent,
+  SNACKBAR_PANEL_CLASS,
+  SectionHeadingComponent,
+  SnackbarComponent,
+  SnackbarData,
+} from '@gallery/ui';
 
 import { Photo } from '../../models/photo.model';
 import { MOCK_PHOTOS } from '../../shared/fixtures/mock-photos';
@@ -28,7 +34,7 @@ export class PhotoStreamPageComponent {
     this.snackBar.openFromComponent(SnackbarComponent, {
       data: { message: `Added ${photo.alt} to favorites`, actionLabel: 'Undo' } satisfies SnackbarData,
       duration: 4000,
-      panelClass: 'ui-snackbar-panel',
+      panelClass: SNACKBAR_PANEL_CLASS,
     });
   }
 }
