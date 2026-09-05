@@ -5,12 +5,30 @@
       heading="Favorites"
       hint="tap a photo to open it"
     />
+    @if (favorites.count() > 0) {
+      <app-grid-layout-toggle [layout]="layout()" (layoutChange)="onLayoutChange($event)" />
+    }
   </div>
 
-  <ui-empty-state
-    icon="favorite_border"
-    message="No favorites yet. Photos you tap in the photostream show up here."
-  >
-    <a routerLink="/" class="app-empty-state__cta">Browse photos</a>
-  </ui-empty-state>
+  @if (favorites.count() === 0) {
+    <ui-empty-state
+      icon="favorite_border"
+      message="No favorites yet. Photos you tap in the photostream show up here."
+    >
+      <a routerLink="/" class="app-empty-state__cta">Browse photos</a>
+    </ui-empty-state>
+  } @else {
+    <app-photo-grid #grid [layout]="layout()">
+      @for (photo of favorites.photos(); track photo.id) {
+        <li [style.grid-row-end]="grid.spanFor(photo)">
+          <app-photo-tile
+            [photo]="photo"
+            [favorite]="true"
+            interaction="link"
+            [aspectRatio]="grid.ratioFor(photo)"
+          />
+        </li>
+      }
+    </app-photo-grid>
+  }
 </section>
