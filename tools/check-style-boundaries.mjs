@@ -29,7 +29,10 @@ function resolvesInside(file, specifier, root) {
 
 const violations = [];
 
-const libraryStyles = globSync(`${LIBRARY_ROOT}/**/*.scss`);
+const libraryStyles = [
+  ...globSync(`${LIBRARY_ROOT}/**/*.scss`),
+  ...globSync(`${LIBRARY_ROOT}/.*/**/*.scss`),
+];
 for (const { file, specifier } of scan(libraryStyles, STYLE_AT_RULE)) {
   if (!resolvesInside(file, specifier, LIBRARY_ROOT)) {
     violations.push(`${file}: stylesheet reaches outside the library — '${specifier}'`);
