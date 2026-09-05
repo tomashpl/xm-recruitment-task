@@ -2,7 +2,7 @@
 
 A photo library app built with Angular 22 and Angular Material. It has three screens: an infinite-feeling photostream at `/`, a favourites list at `/favorites`, and a single-photo page at `/photos/:id`.
 
-This is a presentational component library and routing skeleton — there is no backend. Photos are static fixtures (`src/app/shared/fixtures/mock-photos.ts`) whose images are served straight from [picsum.photos](https://picsum.photos). No HTTP calls, persistence, real infinite scroll, or real favourites count exist yet.
+Photos come from the [picsum.photos](https://picsum.photos) API: the photostream lists its first page and the single-photo page resolves the route id against the service. Favourites are not persisted yet, and the photostream loads one page rather than scrolling infinitely.
 
 ## Install
 

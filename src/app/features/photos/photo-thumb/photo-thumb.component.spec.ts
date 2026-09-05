@@ -1,11 +1,12 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_PHOTOS } from '../../../shared/fixtures/mock-photos';
+import { samplePhoto } from '../../../shared/photos/picsum.test-data';
 import { PhotoThumbComponent } from './photo-thumb.component';
 
 describe('PhotoThumbComponent', () => {
   let fixture: ComponentFixture<PhotoThumbComponent>;
+  const photo = samplePhoto();
   const image = (): HTMLImageElement => fixture.nativeElement.querySelector('img');
 
   beforeEach(async () => {
@@ -15,16 +16,16 @@ describe('PhotoThumbComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(PhotoThumbComponent);
-    fixture.componentRef.setInput('photo', MOCK_PHOTOS[0]);
+    fixture.componentRef.setInput('photo', photo);
     await fixture.whenStable();
   });
 
   it('points the image at the photo url', () => {
-    expect(image().getAttribute('src')).toBe(MOCK_PHOTOS[0].url);
+    expect(image().getAttribute('src')).toBe(photo.url);
   });
 
   it('carries the alternative text from the photo', () => {
-    expect(image().getAttribute('alt')).toBe(MOCK_PHOTOS[0].alt);
+    expect(image().getAttribute('alt')).toBe(photo.alt);
   });
 
   it('loads lazily so long grids stay cheap', () => {

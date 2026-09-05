@@ -1,15 +1,37 @@
 import { Location } from '@angular/common';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { provideGalleryUi } from '@gallery/ui';
 
-import { MOCK_DETAIL_PHOTO } from '../../shared/fixtures/mock-photos';
+import { photoInfoUrl } from '../../shared/photos/picsum';
+import { picsumDto } from '../../shared/photos/picsum.test-data';
 import { PhotoDetailPageComponent } from './photo-detail-page.component';
 
 describe('PhotoDetailPageComponent', () => {
   let harness: RouterTestingHarness;
+  let httpMock: HttpTestingController;
+
+  const element = (selector: string): HTMLElement | null =>
+    harness.routeNativeElement!.querySelector(selector);
+
+  async function open(id: string): Promise<void> {
+    await harness.navigateByUrl(`/photos/${id}`, PhotoDetailPageComponent);
+    harness.detectChanges();
+  }
+
+  async function resolve(id: string, dto = picsumDto({ id })): Promise<void> {
+    httpMock.expectOne(photoInfoUrl(id)).flush(dto);
+    await harness.fixture.whenStable();
+  }
+
+  async function reject(id: string, status: number): Promise<void> {
+    httpMock.expectOne(photoInfoUrl(id)).flush(null, { status, statusText: 'Error' });
+    await harness.fixture.whenStable();
+  }
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
@@ -20,37 +42,101 @@ describe('PhotoDetailPageComponent', () => {
           withComponentInputBinding(),
         ),
         provideGalleryUi(),
+        provideHttpClient(),
+        provideHttpClientTesting(),
       ],
     });
     harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/photos/ansel', PhotoDetailPageComponent);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('shows a single photo rather than a grid', () => {
-    expect(harness.routeNativeElement!.querySelector('app-photo-stage')).not.toBeNull();
-    expect(harness.routeNativeElement!.querySelector('app-photo-grid')).toBeNull();
+  afterEach(() => {
+    httpMock.verify();
   });
 
-  it('offers the remove from favorites action', () => {
-    const button: HTMLButtonElement =
-      harness.routeNativeElement!.querySelector('ui-button button')!;
-    expect(button.textContent).toContain('Remove from favorites');
+  it('requests the photo named by the route', async () => {
+    await open('564');
+    const request = httpMock.expectOne(photoInfoUrl('564'));
+    expect(request.request.method).toBe('GET');
+    request.flush(picsumDto({ id: '564' }));
   });
 
-  it('shows the author from the fixture', () => {
-    const meta: HTMLElement = harness.routeNativeElement!.querySelector('app-photo-meta')!;
-    expect(meta.textContent).toContain(MOCK_DETAIL_PHOTO.author!);
+  it('shows a single photo rather than a grid', async () => {
+    await open('564');
+    await resolve('564');
+    expect(element('app-photo-stage')).not.toBeNull();
+    expect(element('app-photo-grid')).toBeNull();
   });
 
-  it('puts the back control ahead of the author', () => {
-    const header: HTMLElement = harness.routeNativeElement!.querySelector('.app-page__header')!;
+  it('shows the author returned by the api', async () => {
+    await open('564');
+    await resolve('564', picsumDto({ id: '564', author: 'Ada Lovelace' }));
+    expect(element('app-photo-meta')!.textContent).toContain('Ada Lovelace');
+  });
+
+  it('shows a loading indicator while the request is in flight', async () => {
+    await open('564');
+    expect(element('ui-loading-indicator')).not.toBeNull();
+    expect(element('app-photo-stage')).toBeNull();
+    httpMock.expectOne(photoInfoUrl('564')).flush(picsumDto({ id: '564' }));
+  });
+
+  it('reports an unknown photo rather than an error', async () => {
+    await open('does-not-exist');
+    await reject('does-not-exist', 404);
+    expect(element('ui-empty-state')!.textContent).toContain('does not exist');
+    expect(element('app-photo-stage')).toBeNull();
+  });
+
+  it('offers a retry for any other failure', async () => {
+    await open('564');
+    await reject('564', 500);
+    const emptyState = element('ui-empty-state')!;
+    expect(emptyState.textContent).toContain('Could not load this photo');
+    expect(emptyState.querySelector('button')).not.toBeNull();
+  });
+
+  it('issues a second request when the retry is pressed', async () => {
+    await open('564');
+    await reject('564', 500);
+    const emptyState = element('ui-empty-state')!;
+    emptyState.querySelector('button')!.click();
+    harness.detectChanges();
+    httpMock.expectOne(photoInfoUrl('564')).flush(picsumDto({ id: '564' }));
+    await harness.fixture.whenStable();
+    expect(element('app-photo-stage')).not.toBeNull();
+    expect(element('ui-empty-state')).toBeNull();
+  });
+
+  it('requests a different photo for a different route id', async () => {
+    await open('1');
+    await resolve('1');
+    const firstSrc = element('img')!.getAttribute('src');
+
+    await open('2');
+    await resolve('2');
+    expect(element('img')!.getAttribute('src')).not.toBe(firstSrc);
+  });
+
+  it('offers the remove from favorites action', async () => {
+    await open('564');
+    await resolve('564');
+    expect(element('ui-button button')!.textContent).toContain('Remove from favorites');
+  });
+
+  it('puts the back control ahead of the author', async () => {
+    await open('564');
+    await resolve('564');
+    const header = element('.app-page__header')!;
     const children = Array.from(header.children).map(child => child.tagName.toLowerCase());
     expect(children.indexOf('ui-icon-button')).toBe(0);
     expect(children.indexOf('ui-icon-button')).toBeLessThan(children.indexOf('app-photo-meta'));
   });
 
-  it('keeps the header row as tall as it would be without the back control', () => {
-    const header: HTMLElement = harness.routeNativeElement!.querySelector('.app-page__header')!;
+  it('keeps the header row as tall as it would be without the back control', async () => {
+    await open('564');
+    await resolve('564');
+    const header = element('.app-page__header')!;
     const back: HTMLElement = header.querySelector('ui-icon-button')!;
     const tallestSibling = Math.max(
       ...Array.from(header.children)
@@ -62,27 +148,19 @@ describe('PhotoDetailPageComponent', () => {
     expect(header.getBoundingClientRect().height).toBe(tallestSibling);
   });
 
-  it('walks the history back when the back control is pressed', () => {
+  it('walks the history back when the back control is pressed', async () => {
+    await open('564');
+    await resolve('564');
     const spy = spyOn(TestBed.inject(Location), 'back');
-    const button: HTMLButtonElement = harness.routeNativeElement!.querySelector(
-      'button[aria-label="Go back"]',
-    )!;
-    button.click();
+    element('button[aria-label="Go back"]')!.click();
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
-  it('names the section for assistive technology without showing a visible heading', () => {
-    const heading: HTMLElement = harness.routeNativeElement!.querySelector('h2')!;
+  it('names the section for assistive technology without showing a visible heading', async () => {
+    await open('564');
+    await resolve('564');
+    const heading = element('h2')!;
     expect(heading.textContent!.trim()).toBe('Single photo');
     expect(heading.classList).toContain('visually-hidden');
-  });
-
-  it('renders a different photo for a different route id', async () => {
-    const firstSrc = harness.routeNativeElement!.querySelector('img')!.getAttribute('src');
-
-    await harness.navigateByUrl('/photos/berlin', PhotoDetailPageComponent);
-    const secondSrc = harness.routeNativeElement!.querySelector('img')!.getAttribute('src');
-
-    expect(secondSrc).not.toBe(firstSrc);
   });
 });

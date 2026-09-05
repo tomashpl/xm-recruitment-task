@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { provideGalleryUi } from '@gallery/ui';
 
-import { MOCK_FAVORITES } from '../../shared/fixtures/mock-photos';
 import { FavoritesPageComponent } from './favorites-page.component';
 
 describe('FavoritesPageComponent', () => {
@@ -19,27 +18,20 @@ describe('FavoritesPageComponent', () => {
     await fixture.whenStable();
   });
 
-  it('renders one tile per favorite', () => {
-    expect(fixture.nativeElement.querySelectorAll('app-photo-tile').length).toBe(
-      MOCK_FAVORITES.length,
-    );
+  it('labels the section by its heading', () => {
+    const section: HTMLElement = fixture.nativeElement.querySelector('section');
+    const heading: HTMLElement = fixture.nativeElement.querySelector('h2');
+    expect(section.getAttribute('aria-labelledby')).toBe(heading.id);
   });
 
-  it('renders every favorite as a link to its detail route', () => {
-    const hrefs = Array.from<HTMLAnchorElement>(
-      fixture.nativeElement.querySelectorAll('app-photo-tile a'),
-    ).map(anchor => anchor.getAttribute('href'));
-    expect(hrefs).toEqual(MOCK_FAVORITES.map(photo => `/photos/${photo.id}`));
-  });
-
-  it('hides the empty state while favorites exist', () => {
-    expect(fixture.nativeElement.querySelector('ui-empty-state')).toBeNull();
-  });
-
-  it('shows the empty state and hides the grid when there are none', async () => {
-    fixture.componentInstance['favorites'].set([]);
-    await fixture.whenStable();
+  it('shows the empty state while nothing can be favorited yet', () => {
     expect(fixture.nativeElement.querySelector('ui-empty-state')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('app-photo-grid')).toBeNull();
+  });
+
+  it('sends the visitor back to the photostream', () => {
+    const cta: HTMLAnchorElement = fixture.nativeElement.querySelector('ui-empty-state a');
+    expect(cta.getAttribute('href')).toBe('/');
+    expect(cta.textContent).toContain('Browse photos');
   });
 });

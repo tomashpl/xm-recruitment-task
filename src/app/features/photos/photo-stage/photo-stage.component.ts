@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 import { Photo } from '../../../models/photo.model';
 
@@ -10,4 +10,6 @@ import { Photo } from '../../../models/photo.model';
 })
 export class PhotoStageComponent {
   readonly photo = input.required<Photo>();
+
+  protected readonly aspectRatio = computed(() => `${this.photo().width} / ${this.photo().height}`);
 }
