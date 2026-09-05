@@ -1,0 +1,14 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72px;
+  padding: 24px 0;
+}
+
+ui-button.visually-hidden:focus-within {
+  position: static;
+  width: auto;
+  height: auto;
+  clip-path: none;
+}
