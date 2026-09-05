@@ -44,6 +44,14 @@ jobs:
       - name: Build the application
         run: npx ng build --base-href "${{ steps.pages.outputs.base_path }}/"
 
+      - name: Build Storybook
+        run: npm run build:storybook
+
+      - name: Add Storybook to the Pages artifact
+        run: |
+          mkdir -p dist/gallery-template/browser/storybook
+          cp -r dist/storybook/. dist/gallery-template/browser/storybook/
+
       - name: Add the SPA fallback
         run: cp dist/gallery-template/browser/index.html dist/gallery-template/browser/404.html
 
