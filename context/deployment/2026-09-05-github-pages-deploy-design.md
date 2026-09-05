@@ -1,7 +1,7 @@
 # GitHub Actions CI and GitHub Pages deployment
 
 Date: 2026-09-05
-Status: approved, pending implementation
+Status: implemented
 
 ## Goal
 
@@ -95,7 +95,7 @@ job gates:  uses ./.github/workflows/ci.yml
 job build:  needs gates
   checkout -> setup-node -> npm ci
   configure-pages
-  ng build --base-href "/<repository name>/"
+  ng build --base-href "<base_path>/"
   cp dist/gallery-template/browser/index.html dist/gallery-template/browser/404.html
   upload-pages-artifact (path: dist/gallery-template/browser)
 job deploy: needs build
@@ -103,10 +103,13 @@ job deploy: needs build
   deploy-pages
 ```
 
-The base href is derived from `github.event.repository.name` rather than hardcoded, so
-the workflow survives a repository rename and works on a fork. `cancel-in-progress` is
-`false` here — unlike in CI — because interrupting a Pages publication midway leaves
-the site in a partial state, while interrupting a test run costs nothing.
+The base href is derived from `steps.pages.outputs.base_path`, the value `configure-pages`
+computes, rather than from `github.event.repository.name` or a hardcoded string. That output
+evaluates to `/xm-recruitment-task` for a project site and to an empty string for a user site
+or a custom domain, so appending `/` yields the correct base href in all three cases — whereas
+the repository name would have been wrong for a user site and for a custom domain.
+`cancel-in-progress` is `false` here — unlike in CI — because interrupting a Pages publication
+midway leaves the site in a partial state, while interrupting a test run costs nothing.
 
 ## The pipeline must pass its own gates
 
@@ -128,6 +131,12 @@ Three unknowns must be settled by observing a real run, not by assertion:
    failing `prepare` script is a common cause of a red `npm ci`.
 3. **Whether the copied `404.html` actually serves nested routes.** Only a live request
    to the published site can confirm this.
+
+The first two were settled by the CI runs on this branch: `ChromeHeadless` started on
+`ubuntu-latest` with no launcher configuration, and `npm ci` completed cleanly with
+husky's `prepare` script. No `karma.conf.js` was created, and Tasks 2 and 3 of the
+contingency plan were never executed. The third risk stays open until the first live
+deployment.
 
 ## Acceptance criteria
 
