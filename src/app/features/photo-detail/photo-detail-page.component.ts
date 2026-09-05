@@ -31,6 +31,8 @@ export class PhotoDetailPageComponent {
       url: match.url,
       alt: match.alt,
       author: MOCK_DETAIL_PHOTO.author,
+      width: match.width,
+      height: match.height,
       downloadUrl: MOCK_DETAIL_PHOTO.downloadUrl,
     };
   });

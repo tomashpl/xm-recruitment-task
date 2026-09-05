@@ -39,7 +39,7 @@ describe('PhotoDetailPageComponent', () => {
 
   it('shows the author from the fixture', () => {
     const meta: HTMLElement = harness.routeNativeElement!.querySelector('app-photo-meta')!;
-    expect(meta.textContent).toContain(MOCK_DETAIL_PHOTO.author!);
+    expect(meta.textContent).toContain(MOCK_DETAIL_PHOTO.author);
   });
 
   it('puts the back control ahead of the author', () => {
