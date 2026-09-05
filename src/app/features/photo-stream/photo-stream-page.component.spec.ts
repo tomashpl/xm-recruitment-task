@@ -5,8 +5,10 @@ import { Component, provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, provideRouter } from '@angular/router';
-import { provideGalleryUi } from '@gallery/ui';
+import { SnackbarData, provideGalleryUi } from '@gallery/ui';
 
+import { FAVORITES_STORAGE_KEY } from '../../shared/favorites/favorites';
+import { FavoritesStore } from '../../shared/favorites/favorites.store';
 import {
   PHOTO_STREAM_RETRY_DELAYS,
   PhotoStreamStore,
@@ -49,6 +51,7 @@ describe('PhotoStreamPageComponent', () => {
       throw new Error('no sentinel observed');
     };
     localStorage.removeItem(GRID_LAYOUT_STORAGE_KEY);
+    localStorage.removeItem(FAVORITES_STORAGE_KEY);
 
     await TestBed.configureTestingModule({
       animationsEnabled: true,
@@ -72,6 +75,7 @@ describe('PhotoStreamPageComponent', () => {
   afterEach(() => {
     httpMock.verify();
     localStorage.removeItem(GRID_LAYOUT_STORAGE_KEY);
+    localStorage.removeItem(FAVORITES_STORAGE_KEY);
   });
 
   async function respondWith(count: number): Promise<void> {
@@ -195,14 +199,59 @@ describe('PhotoStreamPageComponent', () => {
     expect(fixture.nativeElement.querySelectorAll('app-photo-tile').length).toBe(1);
   });
 
-  it('opens a snackbar when a tile is activated', async () => {
+  const announced = (spy: jasmine.Spy): SnackbarData =>
+    spy.calls.mostRecent().args[1]?.data as SnackbarData;
+
+  it('saves the photo it announces when a tile is activated', async () => {
     await respondWith(2);
     const snackBar = TestBed.inject(MatSnackBar);
     const spy = spyOn(snackBar, 'openFromComponent').and.callThrough();
     fixture.nativeElement.querySelector('app-photo-tile button[aria-pressed]').click();
-    expect(spy).toHaveBeenCalledTimes(1);
+    await fixture.whenStable();
+
+    expect(TestBed.inject(FavoritesStore).count()).toBe(1);
+    expect(announced(spy).message).toBe('Added photo by Author 0 to favorites');
     snackBar.dismiss();
   });
+
+  it('offers no undo it cannot honour', async () => {
+    await respondWith(1);
+    const snackBar = TestBed.inject(MatSnackBar);
+    const spy = spyOn(snackBar, 'openFromComponent').and.callThrough();
+    fixture.nativeElement.querySelector('app-photo-tile button[aria-pressed]').click();
+    await fixture.whenStable();
+
+    expect(announced(spy).actionLabel).toBeUndefined();
+    snackBar.dismiss();
+  });
+
+  it('removes a photo it already holds and says so', async () => {
+    await respondWith(1);
+    const snackBar = TestBed.inject(MatSnackBar);
+    const tile = (): HTMLButtonElement =>
+      fixture.nativeElement.querySelector('app-photo-tile button[aria-pressed]');
+    tile().click();
+    await fixture.whenStable();
+    const spy = spyOn(snackBar, 'openFromComponent').and.callThrough();
+    tile().click();
+    await fixture.whenStable();
+
+    expect(TestBed.inject(FavoritesStore).count()).toBe(0);
+    expect(announced(spy).message).toBe('Removed photo by Author 0 from favorites');
+    snackBar.dismiss();
+  });
+
+  it('shows the tile as pressed once the photo is a favorite', async () => {
+    await respondWith(1);
+    const tile = (): HTMLButtonElement =>
+      fixture.nativeElement.querySelector('app-photo-tile button[aria-pressed]');
+    expect(tile().getAttribute('aria-pressed')).toBe('false');
+    tile().click();
+    await fixture.whenStable();
+    expect(tile().getAttribute('aria-pressed')).toBe('true');
+    TestBed.inject(MatSnackBar).dismiss();
+  });
+
   it('offers the layout toggle beside the heading', async () => {
     await respondWith(3);
     const header: HTMLElement = fixture.nativeElement.querySelector('.app-page__header');

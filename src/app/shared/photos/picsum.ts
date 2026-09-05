@@ -35,6 +35,21 @@ export function scaledHeight(dto: PicsumPhotoDto, targetWidth: number): number {
   return Math.round((targetWidth * dto.height) / dto.width);
 }
 
+export function rescalePhoto(photo: Photo, targetWidth: number): Photo {
+  if (photo.width === targetWidth) {
+    return photo;
+  }
+
+  const height = Math.round((targetWidth * photo.height) / photo.width);
+
+  return {
+    ...photo,
+    url: photoImageUrl(photo.id, targetWidth, height),
+    width: targetWidth,
+    height,
+  };
+}
+
 export function toPhoto(dto: PicsumPhotoDto, targetWidth: number): Photo {
   const height = scaledHeight(dto, targetWidth);
 

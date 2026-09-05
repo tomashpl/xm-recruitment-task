@@ -3,11 +3,14 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { provideGalleryUi } from '@gallery/ui';
 
-import { photoInfoUrl } from '../../shared/photos/picsum';
+import { FAVORITES_STORAGE_KEY } from '../../shared/favorites/favorites';
+import { FavoritesStore } from '../../shared/favorites/favorites.store';
+import { GRID_IMAGE_WIDTH, photoInfoUrl } from '../../shared/photos/picsum';
 import { picsumDto } from '../../shared/photos/picsum.test-data';
 import { PhotoDetailPageComponent } from './photo-detail-page.component';
 
@@ -52,6 +55,7 @@ describe('PhotoDetailPageComponent', () => {
 
   afterEach(() => {
     httpMock.verify();
+    localStorage.removeItem(FAVORITES_STORAGE_KEY);
   });
 
   it('requests the photo named by the route', async () => {
@@ -118,10 +122,49 @@ describe('PhotoDetailPageComponent', () => {
     expect(element('img')!.getAttribute('src')).not.toBe(firstSrc);
   });
 
-  it('offers the remove from favorites action', async () => {
+  it('offers to add a photo that is not a favorite yet', async () => {
     await open('564');
     await resolve('564');
+    const button = element('ui-button button')!;
+    expect(button.textContent).toContain('Add to favorites');
+  });
+
+  it('saves the photo when the button is pressed', async () => {
+    await open('564');
+    await resolve('564');
+    element('ui-button button')!.click();
+    await harness.fixture.whenStable();
+
+    const store = TestBed.inject(FavoritesStore);
+    expect(store.isFavorite('564')).toBeTrue();
+    expect(store.photos()[0].width).toBe(GRID_IMAGE_WIDTH);
     expect(element('ui-button button')!.textContent).toContain('Remove from favorites');
+    TestBed.inject(MatSnackBar).dismiss();
+  });
+
+  it('keeps focus on the favorite button after it is activated', async () => {
+    await open('564');
+    await resolve('564');
+    const button = element('ui-button button')!;
+    button.focus();
+    button.click();
+    await harness.fixture.whenStable();
+
+    expect(document.activeElement).toBe(button);
+    TestBed.inject(MatSnackBar).dismiss();
+  });
+
+  it('removes a photo it already holds', async () => {
+    await open('564');
+    await resolve('564');
+    element('ui-button button')!.click();
+    await harness.fixture.whenStable();
+    element('ui-button button')!.click();
+    await harness.fixture.whenStable();
+
+    expect(TestBed.inject(FavoritesStore).count()).toBe(0);
+    expect(element('ui-button button')!.textContent).toContain('Add to favorites');
+    TestBed.inject(MatSnackBar).dismiss();
   });
 
   it('puts the back control ahead of the author', async () => {

@@ -28,6 +28,7 @@
         >
           <app-photo-tile
             [photo]="photo"
+            [favorite]="favorites.isFavorite(photo.id)"
             [aspectRatio]="grid.ratioFor(photo)"
             (activate)="onActivate($event)"
           />

@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { HeaderComponent } from './layout/header/header.component';
 import { SkipLinkComponent } from './layout/skip-link/skip-link.component';
+import { FavoritesStore } from './shared/favorites/favorites.store';
 
 @Component({
   selector: 'app-root',
@@ -11,4 +12,6 @@ import { SkipLinkComponent } from './layout/skip-link/skip-link.component';
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent {}
+export class AppComponent {
+  protected readonly favorites = inject(FavoritesStore);
+}

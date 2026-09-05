@@ -2,5 +2,8 @@
   <app-tab-link link="/" icon="photo_camera" label="Photos" />
   <app-tab-link link="/favorites" icon="favorite_border" activeIcon="favorite" label="Favorites">
     <ui-badge [count]="favoritesCount()" />
+    @if (favoritesCount() > 0) {
+      <span class="visually-hidden">{{ favoritesCount() }} saved</span>
+    }
   </app-tab-link>
 </nav>
