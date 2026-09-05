@@ -22,7 +22,10 @@
   } @else {
     <app-photo-grid #grid [layout]="layout()">
       @for (photo of store.photos(); track photo.id) {
-        <li animate.enter="app-enter-fade" [style.grid-row-end]="grid.spanFor(photo)">
+        <li
+          [animate.enter]="$index < restoredCount ? '' : 'app-enter-fade'"
+          [style.grid-row-end]="grid.spanFor(photo)"
+        >
           <app-photo-tile
             [photo]="photo"
             [aspectRatio]="grid.ratioFor(photo)"

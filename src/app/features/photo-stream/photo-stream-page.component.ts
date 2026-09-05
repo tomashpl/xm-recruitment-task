@@ -61,6 +61,7 @@ export class PhotoStreamPageComponent {
 
   protected readonly store = inject(PhotoStreamStore);
   protected readonly layout = this.gridLayout.layout;
+  protected readonly restoredCount = untracked(() => this.store.photos().length);
   private readonly scrollRestored = signal(false);
 
   constructor() {

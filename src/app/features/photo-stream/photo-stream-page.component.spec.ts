@@ -51,6 +51,7 @@ describe('PhotoStreamPageComponent', () => {
     localStorage.removeItem(GRID_LAYOUT_STORAGE_KEY);
 
     await TestBed.configureTestingModule({
+      animationsEnabled: true,
       imports: [PhotoStreamPageComponent],
       providers: [
         provideZonelessChangeDetection(),
@@ -106,6 +107,11 @@ describe('PhotoStreamPageComponent', () => {
   const tiles = (): HTMLElement[] =>
     Array.from(fixture.nativeElement.querySelectorAll('app-photo-tile'));
 
+  const items = (): HTMLElement[] => Array.from(fixture.nativeElement.querySelectorAll('li'));
+
+  const enteringItems = (): HTMLElement[] =>
+    Array.from(fixture.nativeElement.querySelectorAll('li.app-enter-fade'));
+
   it('requests the first page of photos on creation', () => {
     const request = httpMock.expectOne(photoListUrl(1, PAGE_SIZE));
     expect(request.request.method).toBe('GET');
@@ -129,6 +135,36 @@ describe('PhotoStreamPageComponent', () => {
     expect(
       fixture.nativeElement.querySelectorAll('app-photo-tile button[aria-pressed]').length,
     ).toBe(4);
+  });
+
+  it('fades in the photos of the first page', async () => {
+    await respondWith(3);
+
+    expect(enteringItems().length).toBe(3);
+  });
+
+  it('does not fade in photos that were already in the store when the page opened', async () => {
+    await deliver(1, 3, null);
+    fixture.destroy();
+
+    fixture = TestBed.createComponent(PhotoStreamPageComponent);
+    fixture.detectChanges();
+
+    expect(tiles().length).toBe(3);
+    expect(enteringItems().length).toBe(0);
+  });
+
+  it('fades in the photos of a newly appended page', async () => {
+    await deliver(1, 3, 2);
+    await afterPaint();
+
+    fire(true);
+    await settle();
+    await deliver(2, 3, null);
+
+    const appended = items().slice(3);
+    expect(appended.length).toBe(3);
+    expect(appended.every(item => item.classList.contains('app-enter-fade'))).toBeTrue();
   });
 
   it('shows the loading indicator while the request is in flight', () => {
