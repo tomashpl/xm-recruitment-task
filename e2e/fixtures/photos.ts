@@ -9,6 +9,7 @@ export interface PicsumDto {
 
 export const PAGE_SIZE = 30;
 export const TOTAL_PAGES = 3;
+export const GRID_IMAGE_WIDTH = 600;
 
 const AUTHORS = ['Ada Lovelace', 'Grace Hopper', 'Alan Turing', 'Barbara Liskov'];
 const RATIOS: readonly (readonly [number, number])[] = [
@@ -42,4 +43,34 @@ export function linkHeader(page: number, totalPages: number = TOTAL_PAGES): stri
   }
 
   return parts.join(', ');
+}
+
+export interface StoredPhoto {
+  readonly id: string;
+  readonly url: string;
+  readonly alt: string;
+  readonly author: string;
+  readonly width: number;
+  readonly height: number;
+  readonly downloadUrl: string;
+}
+
+export function storedPhoto(id: string): StoredPhoto {
+  const dto = photoPage(1).find(photo => photo.id === id);
+
+  if (!dto) {
+    throw new Error(`No fixture photo with id ${id}`);
+  }
+
+  const height = Math.round((GRID_IMAGE_WIDTH * dto.height) / dto.width);
+
+  return {
+    id: dto.id,
+    url: `https://picsum.photos/id/${dto.id}/${GRID_IMAGE_WIDTH}/${height}`,
+    alt: `photo by ${dto.author}`,
+    author: dto.author,
+    width: GRID_IMAGE_WIDTH,
+    height,
+    downloadUrl: dto.download_url,
+  };
 }
