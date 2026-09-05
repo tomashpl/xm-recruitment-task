@@ -13,6 +13,7 @@ describe('StreamSentinelComponent', () => {
   let observed: Element[];
   let disconnected: number;
   let fire: (isIntersecting: boolean) => void;
+  let fireBatch: (states: boolean[]) => void;
 
   async function afterPaint(): Promise<void> {
     await new Promise<void>(resolve => requestAnimationFrame(() => setTimeout(resolve, 0)));
@@ -21,6 +22,13 @@ describe('StreamSentinelComponent', () => {
   const factory: IntersectionObserverFactory = callback => {
     fire = isIntersecting => {
       callback([{ isIntersecting } as IntersectionObserverEntry], {} as IntersectionObserver);
+    };
+
+    fireBatch = states => {
+      callback(
+        states.map(isIntersecting => ({ isIntersecting }) as IntersectionObserverEntry),
+        {} as IntersectionObserver,
+      );
     };
 
     return {
@@ -69,6 +77,16 @@ describe('StreamSentinelComponent', () => {
     fire(false);
     await fixture.whenStable();
     expect(fixture.componentInstance.visible()).toBeFalse();
+  });
+
+  it('takes the most recent entry when a batch arrives at once', async () => {
+    fireBatch([true, false]);
+    await fixture.whenStable();
+    expect(fixture.componentInstance.visible()).toBeFalse();
+
+    fireBatch([false, true]);
+    await fixture.whenStable();
+    expect(fixture.componentInstance.visible()).toBeTrue();
   });
 
   it('shows the loading indicator only while it is loading', async () => {

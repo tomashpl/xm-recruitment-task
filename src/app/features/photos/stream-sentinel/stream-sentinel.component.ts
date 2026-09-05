@@ -37,7 +37,7 @@ export class StreamSentinelComponent {
   constructor() {
     afterNextRender(() => {
       const observer = this.createObserver(
-        entries => this.intersecting.set(entries.some(entry => entry.isIntersecting)),
+        entries => this.intersecting.set(entries.at(-1)?.isIntersecting ?? false),
         { rootMargin: SENTINEL_ROOT_MARGIN },
       );
 
