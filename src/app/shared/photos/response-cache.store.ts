@@ -3,6 +3,7 @@ import { Injectable, InjectionToken, inject } from '@angular/core';
 
 import {
   CACHE_NAME,
+  CACHE_PREFIX,
   isFresh,
   readCachedAt,
   toCachedResponse,
@@ -22,6 +23,21 @@ export interface CachedResponse {
 @Injectable({ providedIn: 'root' })
 export class ResponseCacheStore {
   private readonly storage = inject(RESPONSE_CACHE_STORAGE);
+
+  constructor() {
+    void this.purgeOtherVersions();
+  }
+
+  private async purgeOtherVersions(): Promise<void> {
+    try {
+      const names = (await this.storage?.keys()) ?? [];
+      const previous = names.filter(name => name.startsWith(CACHE_PREFIX) && name !== CACHE_NAME);
+
+      await Promise.all(previous.map(name => this.storage?.delete(name)));
+    } catch {
+      return;
+    }
+  }
 
   async read(url: string): Promise<CachedResponse | null> {
     try {

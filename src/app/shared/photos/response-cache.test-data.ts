@@ -37,6 +37,10 @@ export function fakeCacheStorage(): CacheStorage {
   } as CacheStorage;
 }
 
+export function settle(): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve));
+}
+
 function fakeCache(): Cache {
   const entries = new Map<string, Response>();
 
