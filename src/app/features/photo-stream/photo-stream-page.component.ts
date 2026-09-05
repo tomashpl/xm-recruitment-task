@@ -25,6 +25,8 @@ import {
 import { filter } from 'rxjs';
 
 import { Photo } from '../../models/photo.model';
+import { favoriteMessage } from '../../shared/favorites/favorites';
+import { FavoritesStore } from '../../shared/favorites/favorites.store';
 import { PhotoStreamStore } from '../../shared/photos/photo-stream.store';
 import { GridLayout, GridLayoutStore } from '../../shared/preferences/grid-layout';
 import { GridLayoutToggleComponent } from '../photos/grid-layout-toggle/grid-layout-toggle.component';
@@ -60,6 +62,7 @@ export class PhotoStreamPageComponent {
   private readonly injector = inject(Injector);
 
   protected readonly store = inject(PhotoStreamStore);
+  protected readonly favorites = inject(FavoritesStore);
   protected readonly layout = this.gridLayout.layout;
   protected readonly restoredCount = untracked(() => this.store.photos().length);
   private readonly scrollRestored = signal(false);
@@ -81,11 +84,10 @@ export class PhotoStreamPageComponent {
   }
 
   protected onActivate(photo: Photo): void {
+    const added = this.favorites.toggle(photo);
+
     this.snackBar.openFromComponent(SnackbarComponent, {
-      data: {
-        message: `Added ${photo.alt} to favorites`,
-        actionLabel: 'Undo',
-      } satisfies SnackbarData,
+      data: { message: favoriteMessage(photo, added) } satisfies SnackbarData,
       duration: 4000,
       panelClass: SNACKBAR_PANEL_CLASS,
     });
