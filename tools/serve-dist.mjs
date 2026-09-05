@@ -1,6 +1,6 @@
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
-import { extname, join, normalize, resolve } from 'node:path';
+import { extname, join, normalize, resolve, sep } from 'node:path';
 
 const ROOT = resolve('dist/gallery-template/browser');
 const PORT = Number(process.env['PORT'] ?? 4300);
@@ -26,9 +26,17 @@ if (!existsSync(ROOT)) {
 const fallback = join(ROOT, 'index.html');
 
 function resolveFile(pathname) {
-  const candidate = join(ROOT, normalize(decodeURIComponent(pathname)));
+  let decoded;
 
-  if (!candidate.startsWith(ROOT)) {
+  try {
+    decoded = decodeURIComponent(pathname);
+  } catch {
+    return fallback;
+  }
+
+  const candidate = join(ROOT, normalize(decoded));
+
+  if (candidate !== ROOT && !candidate.startsWith(ROOT + sep)) {
     return fallback;
   }
 
