@@ -7,20 +7,10 @@
     />
   </div>
 
-  @if (favorites().length === 0) {
-    <ui-empty-state
-      icon="favorite_border"
-      message="No favorites yet. Photos you tap in the photostream show up here."
-    >
-      <a routerLink="/" class="app-favorites__cta">Browse photos</a>
-    </ui-empty-state>
-  } @else {
-    <app-photo-grid>
-      @for (photo of favorites(); track photo.id) {
-        <li animate.enter="app-enter-fade">
-          <app-photo-tile [photo]="photo" [favorite]="true" interaction="link" />
-        </li>
-      }
-    </app-photo-grid>
-  }
+  <ui-empty-state
+    icon="favorite_border"
+    message="No favorites yet. Photos you tap in the photostream show up here."
+  >
+    <a routerLink="/" class="app-favorites__cta">Browse photos</a>
+  </ui-empty-state>
 </section>
