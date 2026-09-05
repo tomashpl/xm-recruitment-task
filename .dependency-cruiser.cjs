@@ -26,7 +26,7 @@ module.exports = {
       severity: 'error',
       comment: 'The application consumes the library through @gallery/ui, not by file path.',
       from: { path: '^src/' },
-      to: { path: '^projects/ui/src/lib/' },
+      to: { path: '^projects/ui/', dependencyTypesNot: ['aliased-tsconfig'] },
     },
     {
       name: 'models-is-a-leaf',
@@ -67,7 +67,7 @@ module.exports = {
       name: 'no-upward-imports-to-root',
       severity: 'error',
       comment: 'A layer configures itself; only the composition root wires the application together.',
-      from: { path: '^src/app/(layout|features|models|shared)/' },
+      from: { path: '^src/app/', pathNot: '^src/app/[^/]+\\.ts$' },
       to: { path: '^src/app/[^/]+\\.ts$' },
     },
   ],
