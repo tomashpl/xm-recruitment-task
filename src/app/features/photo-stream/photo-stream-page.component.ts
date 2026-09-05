@@ -2,14 +2,15 @@ import { ViewportScroller } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   effect,
   inject,
   signal,
   untracked,
   viewChild,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NavigationStart, Router } from '@angular/router';
 import {
   ButtonComponent,
   EmptyStateComponent,
@@ -19,6 +20,7 @@ import {
   SnackbarComponent,
   SnackbarData,
 } from '@gallery/ui';
+import { filter } from 'rxjs';
 
 import { Photo } from '../../models/photo.model';
 import { PhotoStreamStore } from '../../shared/photos/photo-stream.store';
@@ -50,6 +52,7 @@ export class PhotoStreamPageComponent {
   private readonly sentinel = viewChild(StreamSentinelComponent);
   private readonly viewport = inject(ViewportScroller);
   private readonly grid = viewChild(PhotoGridComponent);
+  private readonly router = inject(Router);
 
   protected readonly store = inject(PhotoStreamStore);
   protected readonly layout = this.gridLayout.layout;
@@ -58,9 +61,13 @@ export class PhotoStreamPageComponent {
   constructor() {
     effect(() => this.restoreScroll());
     effect(() => this.fillViewport());
-    inject(DestroyRef).onDestroy(() =>
-      this.store.rememberScroll(this.viewport.getScrollPosition()[1]),
-    );
+
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationStart),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => this.store.rememberScroll(this.viewport.getScrollPosition()[1]));
   }
 
   protected onLayoutChange(layout: GridLayout): void {

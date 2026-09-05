@@ -1,9 +1,10 @@
 import { ViewportScroller } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideZonelessChangeDetection } from '@angular/core';
+import { Component, provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router, provideRouter } from '@angular/router';
 import { provideGalleryUi } from '@gallery/ui';
 
 import {
@@ -18,6 +19,9 @@ import {
   IntersectionObserverFactory,
 } from '../photos/intersection-observer';
 import { PhotoStreamPageComponent } from './photo-stream-page.component';
+
+@Component({ selector: 'app-favorites-stub', template: '' })
+class FavoritesStubComponent {}
 
 describe('PhotoStreamPageComponent', () => {
   let fixture: ComponentFixture<PhotoStreamPageComponent>;
@@ -53,6 +57,7 @@ describe('PhotoStreamPageComponent', () => {
         provideGalleryUi(),
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideRouter([{ path: 'favorites', component: FavoritesStubComponent }]),
         { provide: PHOTO_STREAM_RETRY_DELAYS, useValue: [] },
         { provide: INTERSECTION_OBSERVER_FACTORY, useValue: observerFactory },
       ],
@@ -272,12 +277,12 @@ describe('PhotoStreamPageComponent', () => {
     );
   });
 
-  it('remembers where the visitor was when the page goes away', async () => {
+  it('remembers the scroll position when navigation starts, not when the component is destroyed', async () => {
     await deliver(1, 3, null);
     const scroller = TestBed.inject(ViewportScroller);
     spyOn(scroller, 'getScrollPosition').and.returnValue([0, 640]);
 
-    fixture.destroy();
+    await TestBed.inject(Router).navigateByUrl('/favorites');
 
     expect(TestBed.inject(PhotoStreamStore).scrollOffset()).toBe(640);
   });
