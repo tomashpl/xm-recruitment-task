@@ -19,7 +19,7 @@ test.describe('photostream', () => {
       .click();
 
     await expect(page.getByText('Added photo by Ada Lovelace to favorites')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Undo' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Dismiss' })).toBeVisible();
   });
 
   test('appends the next page when the sentinel comes into view', async ({ page, picsum }) => {
