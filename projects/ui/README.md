@@ -22,9 +22,11 @@ A host must do four things:
    @include gallery-ui.styles;
    ```
 
-   resolved through `stylePreprocessorOptions.includePaths: ["projects/ui/src/styles"]`. The rules
-   come as a mixin rather than bare declarations because they have to outrank Angular Material,
-   so the host controls where in the cascade they land — include them last.
+   resolved through `stylePreprocessorOptions.includePaths`, pointing at `projects/ui/src/styles`
+   inside this workspace, or at `node_modules/@gallery/ui/styles` for a consumer of the built
+   package — `ng-package.json` ships the stylesheet as an asset, so `dist/ui/styles/` carries it.
+   The rules come as a mixin rather than bare declarations because they have to outrank Angular
+   Material, so the host controls where in the cascade they land — include them last.
 3. Register the providers once, in the application config:
 
    ```ts

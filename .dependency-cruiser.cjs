@@ -59,9 +59,9 @@ module.exports = {
     {
       name: 'no-page-to-page',
       severity: 'error',
-      comment: 'A page is an entry point; one page importing another is a missing shared component.',
-      from: { path: '^src/app/features/(favorites|photo-detail|photo-stream)/' },
-      to: { path: '^src/app/features/(favorites|photo-detail|photo-stream)/', pathNot: '^src/app/features/$1/' },
+      comment: 'A page is an entry point; one page importing another is a missing shared component. Photo-domain components are exempt because pages legitimately consume them; domain-below-pages guards the other direction.',
+      from: { path: '^src/app/features/([^/]+)/', pathNot: '^src/app/features/photos/' },
+      to: { path: '^src/app/features/([^/]+)/', pathNot: '^src/app/features/(photos|$1)/' },
     },
     {
       name: 'no-upward-imports-to-root',
