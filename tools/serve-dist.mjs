@@ -40,6 +40,14 @@ function resolveFile(pathname) {
     return fallback;
   }
 
+  if (existsSync(candidate) && statSync(candidate).isDirectory()) {
+    const directoryIndex = join(candidate, 'index.html');
+
+    return existsSync(directoryIndex) && statSync(directoryIndex).isFile()
+      ? directoryIndex
+      : fallback;
+  }
+
   return existsSync(candidate) && statSync(candidate).isFile() ? candidate : fallback;
 }
 
