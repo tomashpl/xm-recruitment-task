@@ -37,3 +37,29 @@ npm run build
 ```
 
 Builds a production bundle into `dist/gallery-template`.
+
+## Storybook
+
+```bash
+npm run storybook
+```
+
+Serves a browsable catalogue of the `@gallery/ui` component library at `http://localhost:6006`.
+
+```bash
+npm run build:storybook
+```
+
+Builds the static catalogue into `dist/storybook`.
+
+## End-to-end tests
+
+```bash
+npm run test:e2e
+```
+
+Runs the Playwright suite against Chromium and WebKit. This builds the production bundle first and serves it with a small static server, so the tests exercise the real bundle rather than the dev server; running `npx playwright test` on its own requires an existing `dist/gallery-template` build. For an interactive run:
+
+```bash
+npm run test:e2e:ui
+```

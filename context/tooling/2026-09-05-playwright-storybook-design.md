@@ -76,6 +76,18 @@ are given directly. The alternatives were rejected: hanging the targets off
 command name, and a third `ui-docs` project would cost a tsconfig, a lint target and a
 dependency-cruiser question for the sake of nine primitives.
 
+**The `storybook` target carries `browserTarget: "ui:build"`; `build-storybook` does
+not.** This is a deliberate asymmetry, not an oversight — do not "fix" it by adding or
+removing the option to make the two targets match. `start-schema.json` declares no
+`default` for `browserTarget`, so when the option is left out the dev-server preset
+receives it as `undefined`, and `checkForLegacyBuildOptions()` throws
+`SB_FRAMEWORK_ANGULAR_0001` before Storybook starts. A literal `null` is rejected by
+the builder's own schema validation, so `undefined`-by-omission is not available as a
+workaround either; `"ui:build"` is the only value that satisfies the schema and the
+preset at once. It was measured to cause no ng-packagr side effect and no `tsConfig`
+leak into the Storybook build, so it is harmless to `storybook` and simply unnecessary
+on `build-storybook`, which never goes through that preset check.
+
 **Storybook reuses `test-styles.scss` rather than introducing a stylesheet.** That
 file already themes Material within the library, which is exactly what the stories
 need and exactly what `check:styles` demands. Its name is now slightly narrow, but
@@ -89,9 +101,14 @@ components are all `OnPush` with signal inputs. Storybook supports this mode nat
 and `zone.js` is an optional peer, so nothing needs to pull the Zone runtime back in.
 
 **Stories are excluded from the library build.** `tsconfig.lib.json` currently sweeps
-in every `.ts` under `src/`, so `*.stories.ts` would enter `ng build ui` — a `pre-push`
-hook and a CI gate — and fail on the `@storybook/angular` import, which is not a
-library dependency. `**/*.stories.ts` joins `**/*.spec.ts` in `exclude`.
+in every `.ts` under `src/`, so `*.stories.ts` enters the TypeScript program for
+`ng build ui` — a `pre-push` hook and a CI gate. This does not fail the build:
+ng-packagr's dependency-declaration check, the one that would reject the
+`@storybook/angular` import as neither a dependency nor a peer dependency, only walks
+the module graph reachable from `public-api.ts`, and a story file is never imported
+from there. `**/*.stories.ts` joins `**/*.spec.ts` in `exclude` anyway, to turn that
+incidental guarantee — unreachable today — into a structural one that still holds if
+a story is ever imported by mistake.
 
 **End-to-end tests run against the production bundle, not the dev server.** The
 `webServer` serves `dist/gallery-template/browser`, so the tests exercise the artefact
@@ -205,8 +222,11 @@ Journeys:
    because tiles do not link to the detail page.
 4. **photo-detail** — a direct visit to `/photos/:id` renders author and dimensions
    from the mocked `/info`; the retry control refetches after a failure.
-5. **favorites** — the empty state and its call to action return to the stream; the
-   tab badge shows its count.
+5. **favorites** — the empty state and its call to action return to the stream, and
+   the active tab is marked correctly. The tab badge's count is not asserted:
+   `ViewTabsComponent.favoritesCount` is `input(0)` with no real source yet, so a
+   count assertion would only prove a constant. That journey waits on favourites
+   persistence.
 6. **errors** — a persistent list failure survives the store's three automatic
    retries and settles on the fatal empty state; "Try again" against a healthy mock
    recovers the stream.
@@ -238,15 +258,15 @@ The upload and deploy jobs are unchanged. Storybook then lives at
 
 ## Effect on the existing gates
 
-| Gate           | Effect                                                                                                                                                                                            |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ng build ui`  | Breaks unless `**/*.stories.ts` is excluded in `tsconfig.lib.json`. The single most likely failure in this work.                                                                                  |
-| `depcruise`    | Unchanged, provided stories import relatively; `no-library-self-alias` enforces it.                                                                                                               |
-| `check:styles` | Unchanged. Storybook adds no stylesheet and consumes the library's existing themed entry.                                                                                                         |
-| `lint`         | Picks up `*.stories.ts`. `.storybook/` is skipped, because ESLint ignores dot directories by default. `e2e/**/*.ts` is added to the application's `lintFilePatterns`, which today stop at `src/`. |
-| `format:check` | Covers every new file, including both workflows. `lint-staged` does not touch `.github/**`, so workflow YAML must be formatted by hand.                                                           |
-| `test:all`     | Unchanged.                                                                                                                                                                                        |
-| `npm ci`       | Grows by Storybook's webpack stack; CI additionally downloads two browser engines, mitigated by the cache.                                                                                        |
+| Gate           | Effect                                                                                                                                                                                                                                                  |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ng build ui`  | Unaffected either way. ng-packagr's dependency-declaration check only walks the graph reachable from `public-api.ts`, which never reaches a story file; the `tsconfig.lib.json` exclusion is a structural guarantee, not a fix for an observed failure. |
+| `depcruise`    | Unchanged, provided stories import relatively; `no-library-self-alias` enforces it.                                                                                                                                                                     |
+| `check:styles` | Unchanged. Storybook adds no stylesheet and consumes the library's existing themed entry.                                                                                                                                                               |
+| `lint`         | Picks up `*.stories.ts`. `.storybook/` is skipped, because ESLint ignores dot directories by default. `e2e/**/*.ts` is added to the application's `lintFilePatterns`, which today stop at `src/`.                                                       |
+| `format:check` | Covers every new file, including both workflows. `lint-staged` does not touch `.github/**`, so workflow YAML must be formatted by hand.                                                                                                                 |
+| `test:all`     | Unchanged.                                                                                                                                                                                                                                              |
+| `npm ci`       | Grows by Storybook's webpack stack; CI additionally downloads two browser engines, mitigated by the cache.                                                                                                                                              |
 
 New `.gitignore` entries: `/test-results`, `/playwright-report`, `/blob-report`.
 `dist/storybook` is already covered by the existing `/dist` entry.

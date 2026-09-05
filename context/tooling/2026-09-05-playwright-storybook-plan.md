@@ -4,7 +4,7 @@
 
 **Goal:** Give the workspace a Storybook catalogue of the nine `@gallery/ui` primitives and Playwright coverage of the six journeys a visitor takes through the application, both enforced in CI, with Storybook published alongside the application on GitHub Pages.
 
-**Architecture:** Storybook attaches to the `ui` library project through `@storybook/angular`'s own builder, configured without a `browserTarget` because the library has no browser build. Playwright drives the production bundle behind a dependency-free static server, with picsum answered by route handlers so no test touches the network. Both become gates in `ci.yml`, taking it from seven to nine, and `deploy.yml` copies the built Storybook into the Pages artefact.
+**Architecture:** Storybook attaches to the `ui` library project through `@storybook/angular`'s own builder. `build-storybook` is configured without a `browserTarget`, because the library has no browser build to point at; `storybook`, the dev-server target, carries `browserTarget: "ui:build"` anyway, for reasons that are not obvious from the option's name (see Step 8). Playwright drives the production bundle behind a dependency-free static server, with picsum answered by route handlers so no test touches the network. Both become gates in `ci.yml`, taking it from seven to nine, and `deploy.yml` copies the built Storybook into the Pages artefact.
 
 **Tech Stack:** Angular 22.1.5 (standalone, zoneless), TypeScript 6.0.3, `storybook` + `@storybook/angular` 10.6.0, `@playwright/test` 1.63.0, Node 24 in CI.
 
@@ -120,13 +120,13 @@ export const Danger: Story = { args: { variant: 'danger' } };
 export const WithIcon: Story = { args: { icon: 'favorite' } };
 ```
 
-- [ ] **Step 3: Run the library build and watch it fail**
+- [ ] **Step 3: Run the library build**
 
 Run: `npx ng build ui`
 
-Expected: FAIL. `projects/ui/package.json` declares only `@angular/core`, `@angular/material` and `tslib`, so ng-packagr rejects the `@storybook/angular` import as neither a dependency nor a peer dependency. This is the failure the spec predicted; it proves stories must leave the library build.
+Expected: PASS. `projects/ui/package.json` declares only `@angular/core`, `@angular/material` and `tslib`, so `@storybook/angular`, imported by `button.stories.ts`, is neither a dependency nor a peer dependency — but ng-packagr's dependency-declaration check only walks the module graph reachable from `public-api.ts`, and nothing in that graph imports the story file. The check never reaches it, so the build passes despite the undeclared import. There is no failure to watch here.
 
-- [ ] **Step 4: Exclude stories from the library build**
+- [ ] **Step 4: Exclude stories from the library build anyway**
 
 In `projects/ui/tsconfig.lib.json`, change the `exclude` line:
 
@@ -134,11 +134,13 @@ In `projects/ui/tsconfig.lib.json`, change the `exclude` line:
   "exclude": ["**/*.spec.ts", "**/*.stories.ts"]
 ```
 
-- [ ] **Step 5: Run the library build and watch it pass**
+This does not fix Step 3's build — it already passed. It converts an incidental guarantee (a story file happens to be unreachable from `public-api.ts` today) into a structural one that keeps holding even if a future story is imported by mistake, or a future refactor changes what `public-api.ts` reaches.
+
+- [ ] **Step 5: Run the library build and confirm it still passes**
 
 Run: `npx ng build ui`
 
-Expected: PASS, exit code 0.
+Expected: PASS, exit code 0, same as Step 3.
 
 - [ ] **Step 6: Add the Storybook TypeScript config**
 
@@ -218,6 +220,7 @@ In `angular.json`, inside `projects.ui.architect`, alongside `build`, `test` and
         "storybook": {
           "builder": "@storybook/angular:start-storybook",
           "options": {
+            "browserTarget": "ui:build",
             "configDir": "projects/ui/.storybook",
             "tsConfig": "projects/ui/tsconfig.storybook.json",
             "compodoc": false,
@@ -246,6 +249,8 @@ In `angular.json`, inside `projects.ui.architect`, alongside `build`, `test` and
 ```
 
 `compodoc: false` is not optional — the option defaults to `true` and compodoc is not installed.
+
+`browserTarget` on `storybook` is not optional either, despite the library having no browser build to point it at, and despite `build-storybook` doing without it. Leave it out and `ng run ui:storybook` throws `SB_FRAMEWORK_ANGULAR_0001` before the dev server starts: `start-schema.json` declares no `default` for the option, so an omitted value arrives as `undefined`, and `checkForLegacyBuildOptions()` treats `undefined` as "an old, unsupported Storybook config" and refuses to continue. A literal `null` does not help — the builder's own schema validation rejects it before the preset ever sees it. `"ui:build"` is the only value that is both schema-valid and non-`undefined`, and it was checked to have no side effect on ng-packagr and no `tsConfig` leak into the Storybook build, so it is safe here even though the library build it names is never actually invoked by Storybook. `build-storybook` goes through a different code path that has no such check, which is why it can and does omit the option.
 
 - [ ] **Step 9: Add the npm scripts**
 
@@ -667,7 +672,7 @@ Create `tools/serve-dist.mjs`. The SPA fallback is load-bearing: without it a di
 ```js
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
-import { extname, join, normalize, resolve } from 'node:path';
+import { extname, join, normalize, resolve, sep } from 'node:path';
 
 const ROOT = resolve('dist/gallery-template/browser');
 const PORT = Number(process.env['PORT'] ?? 4300);
@@ -693,10 +698,26 @@ if (!existsSync(ROOT)) {
 const fallback = join(ROOT, 'index.html');
 
 function resolveFile(pathname) {
-  const candidate = join(ROOT, normalize(decodeURIComponent(pathname)));
+  let decoded;
 
-  if (!candidate.startsWith(ROOT)) {
+  try {
+    decoded = decodeURIComponent(pathname);
+  } catch {
     return fallback;
+  }
+
+  const candidate = join(ROOT, normalize(decoded));
+
+  if (candidate !== ROOT && !candidate.startsWith(ROOT + sep)) {
+    return fallback;
+  }
+
+  if (existsSync(candidate) && statSync(candidate).isDirectory()) {
+    const directoryIndex = join(candidate, 'index.html');
+
+    return existsSync(directoryIndex) && statSync(directoryIndex).isFile()
+      ? directoryIndex
+      : fallback;
   }
 
   return existsSync(candidate) && statSync(candidate).isFile() ? candidate : fallback;
@@ -710,11 +731,15 @@ createServer((request, response) => {
     'Cache-Control': 'no-store',
   });
 
-  createReadStream(file).pipe(response);
+  createReadStream(file)
+    .on('error', () => response.destroy())
+    .pipe(response);
 }).listen(PORT, '127.0.0.1', () => {
   console.log(`Serving ${ROOT} on http://127.0.0.1:${PORT}`);
 });
 ```
+
+The path guard originally shipped as `!candidate.startsWith(ROOT)`, which is unsound: a sibling directory whose name merely starts with `ROOT`'s basename — for example `dist/gallery-template/browser-evil` next to `dist/gallery-template/browser` — would also pass `startsWith(ROOT)` and escape the intended root. The guard was corrected to a boundary test against `ROOT + sep` (with an explicit `candidate === ROOT` exception for the root itself, which has no trailing separator to match). The block above reflects the shipped file, including the later additions of directory-index serving, a `decodeURIComponent` failure guard, and an `error` listener on the read stream so a file that vanishes mid-read destroys the response instead of crashing the server — none of which existed when this task was first written.
 
 - [ ] **Step 3: Write the Playwright configuration**
 
