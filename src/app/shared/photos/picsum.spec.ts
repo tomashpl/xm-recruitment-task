@@ -9,10 +9,11 @@ import {
   photoImageUrl,
   photoInfoUrl,
   photoListUrl,
+  rescalePhoto,
   scaledHeight,
   toPhoto,
 } from './picsum';
-import { picsumDto, picsumDtoList, picsumPageHeaders } from './picsum.test-data';
+import { picsumDto, picsumDtoList, picsumPageHeaders, samplePhoto } from './picsum.test-data';
 
 describe('picsum', () => {
   it('builds a list url carrying the page and the limit', () => {
@@ -117,5 +118,34 @@ describe('picsum', () => {
 
   it('caps the pages it will ever request above the size of the collection', () => {
     expect(MAX_PAGES).toBeGreaterThan(34);
+  });
+
+  describe('rescalePhoto', () => {
+    it('returns the same photo when it is already the target width', () => {
+      const photo = samplePhoto();
+      expect(rescalePhoto(photo, photo.width)).toBe(photo);
+    });
+
+    it('scales a detail-sized photo down to the grid width', () => {
+      const detail = toPhoto(picsumDto(), DETAIL_IMAGE_WIDTH);
+      const scaled = rescalePhoto(detail, GRID_IMAGE_WIDTH);
+      expect(scaled.width).toBe(GRID_IMAGE_WIDTH);
+      expect(scaled.height).toBe(Math.round((GRID_IMAGE_WIDTH * detail.height) / detail.width));
+    });
+
+    it('rebuilds the image url for the new size', () => {
+      const detail = toPhoto(picsumDto({ id: '42' }), DETAIL_IMAGE_WIDTH);
+      const scaled = rescalePhoto(detail, GRID_IMAGE_WIDTH);
+      expect(scaled.url).toBe(photoImageUrl('42', GRID_IMAGE_WIDTH, scaled.height));
+    });
+
+    it('carries the identity and the metadata across', () => {
+      const detail = toPhoto(picsumDto({ id: '42', author: 'Ada Lovelace' }), DETAIL_IMAGE_WIDTH);
+      const scaled = rescalePhoto(detail, GRID_IMAGE_WIDTH);
+      expect(scaled.id).toBe('42');
+      expect(scaled.author).toBe('Ada Lovelace');
+      expect(scaled.alt).toBe('photo by Ada Lovelace');
+      expect(scaled.downloadUrl).toBe(detail.downloadUrl);
+    });
   });
 });
