@@ -3,12 +3,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { provideGalleryUi } from '@gallery/ui';
 
-import { MOCK_PHOTOS } from '../../../shared/fixtures/mock-photos';
+import { samplePhoto } from '../../../shared/photos/picsum.test-data';
 import { PhotoTileComponent } from './photo-tile.component';
 
 describe('PhotoTileComponent', () => {
   let fixture: ComponentFixture<PhotoTileComponent>;
-  const photo = MOCK_PHOTOS[0];
+  const photo = samplePhoto();
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
