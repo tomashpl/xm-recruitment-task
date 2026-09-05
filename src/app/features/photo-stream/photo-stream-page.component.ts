@@ -2,6 +2,7 @@ import { ViewportScroller } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  afterRenderEffect,
   effect,
   inject,
   signal,
@@ -59,7 +60,7 @@ export class PhotoStreamPageComponent {
   private readonly scrollRestored = signal(false);
 
   constructor() {
-    effect(() => this.restoreScroll());
+    afterRenderEffect(() => this.restoreScroll());
     effect(() => this.fillViewport());
 
     this.router.events
