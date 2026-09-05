@@ -1,7 +1,9 @@
 import {
   DETAIL_IMAGE_WIDTH,
   GRID_IMAGE_WIDTH,
+  MAX_PAGES,
   PAGE_SIZE,
+  hasNextPage,
   parsePhoto,
   parsePhotoList,
   photoImageUrl,
@@ -10,7 +12,7 @@ import {
   scaledHeight,
   toPhoto,
 } from './picsum';
-import { picsumDto, picsumDtoList } from './picsum.test-data';
+import { picsumDto, picsumDtoList, picsumPageHeaders } from './picsum.test-data';
 
 describe('picsum', () => {
   it('builds a list url carrying the page and the limit', () => {
@@ -70,5 +72,50 @@ describe('picsum', () => {
   it('rejects a photo with dimensions it cannot scale', () => {
     expect(() => parsePhoto(picsumDto({ width: 0 }))).toThrowError(/Malformed/);
     expect(() => parsePhoto(null)).toThrowError(/Malformed/);
+  });
+
+  it('sees a next page in the link header the api sends for page one', () => {
+    expect(hasNextPage('<https://picsum.photos/v2/list?page=2&limit=30>; rel="next"')).toBeTrue();
+  });
+
+  it('sees no next page in the link header the api sends for the last page', () => {
+    expect(hasNextPage('<https://picsum.photos/v2/list?page=33&limit=30>; rel="prev"')).toBeFalse();
+  });
+
+  it('sees a next page when the header also carries a previous one', () => {
+    const link =
+      '<https://picsum.photos/v2/list?page=1&limit=30>; rel="prev", ' +
+      '<https://picsum.photos/v2/list?page=3&limit=30>; rel="next"';
+
+    expect(hasNextPage(link)).toBeTrue();
+  });
+
+  it('sees no next page when the header is absent or empty', () => {
+    expect(hasNextPage(undefined)).toBeFalse();
+    expect(hasNextPage(null)).toBeFalse();
+    expect(hasNextPage('')).toBeFalse();
+  });
+
+  it('ignores the word next when it is not the link relation', () => {
+    const link = '<https://picsum.photos/v2/list?page=33&limit=30&cursor=next>; rel="prev"';
+
+    expect(hasNextPage(link)).toBeFalse();
+  });
+
+  it('builds a list of dtos whose ids continue from the given start', () => {
+    const second = picsumDtoList(2, 30);
+
+    expect(second.map(dto => dto.id)).toEqual(['30', '31']);
+    expect(picsumDtoList(2).map(dto => dto.id)).toEqual(['0', '1']);
+  });
+
+  it('builds page headers that announce the next page or the end of the collection', () => {
+    expect(picsumPageHeaders(2)['Link']).toContain('rel="next"');
+    expect(picsumPageHeaders(null)['Link']).toContain('rel="prev"');
+    expect(hasNextPage(picsumPageHeaders(null)['Link'])).toBeFalse();
+  });
+
+  it('caps the pages it will ever request above the size of the collection', () => {
+    expect(MAX_PAGES).toBeGreaterThan(34);
   });
 });

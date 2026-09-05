@@ -1,5 +1,6 @@
 import { Photo } from '../../models/photo.model';
 
+export const MAX_PAGES = 40;
 export const PICSUM_ORIGIN = 'https://picsum.photos';
 export const PAGE_SIZE = 30;
 export const GRID_IMAGE_WIDTH = 600;
@@ -16,6 +17,10 @@ export interface PicsumPhotoDto {
 
 export function photoListUrl(page: number, limit: number): string {
   return `${PICSUM_ORIGIN}/v2/list?page=${page}&limit=${limit}`;
+}
+
+export function hasNextPage(link: string | null | undefined): boolean {
+  return !!link && link.split(',').some(part => /;\s*rel="next"/.test(part));
 }
 
 export function photoInfoUrl(id: string): string {
