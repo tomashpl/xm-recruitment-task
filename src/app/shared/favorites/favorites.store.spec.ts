@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { DETAIL_IMAGE_WIDTH, GRID_IMAGE_WIDTH, toPhoto } from '../photos/picsum';
 import { picsumDto, samplePhoto } from '../photos/picsum.test-data';
+import { GRID_LAYOUT_STORAGE_KEY } from '../preferences/grid-layout';
 import { FAVORITES_STORAGE_KEY, serializeFavorites } from './favorites';
 import { FavoritesStore } from './favorites.store';
 
@@ -77,14 +78,18 @@ describe('FavoritesStore', () => {
     const photo = samplePhoto({ id: '5' });
     const created = store();
     localStorage.setItem(FAVORITES_STORAGE_KEY, serializeFavorites([photo]));
-    window.dispatchEvent(new StorageEvent('storage', { key: FAVORITES_STORAGE_KEY }));
+    window.dispatchEvent(
+      new StorageEvent('storage', { key: FAVORITES_STORAGE_KEY, storageArea: localStorage }),
+    );
     expect(created.photos()).toEqual([photo]);
   });
 
   it('ignores a change to another key', () => {
     const created = store();
     localStorage.setItem(FAVORITES_STORAGE_KEY, serializeFavorites([samplePhoto({ id: '5' })]));
-    window.dispatchEvent(new StorageEvent('storage', { key: 'gallery.grid-layout' }));
+    window.dispatchEvent(
+      new StorageEvent('storage', { key: GRID_LAYOUT_STORAGE_KEY, storageArea: localStorage }),
+    );
     expect(created.photos()).toEqual([]);
   });
 
@@ -92,7 +97,16 @@ describe('FavoritesStore', () => {
     localStorage.setItem(FAVORITES_STORAGE_KEY, serializeFavorites([samplePhoto({ id: '5' })]));
     const created = store();
     localStorage.clear();
-    window.dispatchEvent(new StorageEvent('storage', { key: null }));
+    window.dispatchEvent(new StorageEvent('storage', { key: null, storageArea: localStorage }));
     expect(created.photos()).toEqual([]);
+  });
+
+  it('ignores a sessionStorage clear from another document', () => {
+    const kept = samplePhoto({ id: '5' });
+    const created = store();
+    created.toggle(kept);
+    localStorage.setItem(FAVORITES_STORAGE_KEY, serializeFavorites([samplePhoto({ id: '9' })]));
+    window.dispatchEvent(new StorageEvent('storage', { key: null, storageArea: sessionStorage }));
+    expect(created.photos()).toEqual([kept]);
   });
 });

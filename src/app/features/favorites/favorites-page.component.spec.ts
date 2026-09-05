@@ -48,6 +48,7 @@ describe('FavoritesPageComponent', () => {
     const fixture = await render();
     expect(fixture.nativeElement.querySelector('ui-empty-state')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('app-photo-grid')).toBeNull();
+    expect(fixture.nativeElement.querySelector('app-grid-layout-toggle')).toBeNull();
   });
 
   it('sends the visitor back to the photostream', async () => {
@@ -89,7 +90,7 @@ describe('FavoritesPageComponent', () => {
     const toggle: HTMLElement = saved.nativeElement.querySelector('app-grid-layout-toggle');
     const headerRect = header.getBoundingClientRect();
     const toggleRect = toggle.getBoundingClientRect();
-    expect(headerRect.right - toggleRect.right).toBeLessThan(2);
+    expect(Math.abs(headerRect.right - toggleRect.right)).toBeLessThan(2);
   });
 
   it('honours the layout the visitor chose in the photostream', async () => {

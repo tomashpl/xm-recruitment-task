@@ -14,6 +14,10 @@ export class FavoritesStore {
 
   constructor() {
     const follow = (event: StorageEvent): void => {
+      if (event.storageArea !== localStorage) {
+        return;
+      }
+
       if (event.key !== null && event.key !== FAVORITES_STORAGE_KEY) {
         return;
       }
