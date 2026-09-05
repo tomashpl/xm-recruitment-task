@@ -96,6 +96,18 @@ describe('PhotoDetailPageComponent', () => {
     expect(emptyState.querySelector('button')).not.toBeNull();
   });
 
+  it('issues a second request when the retry is pressed', async () => {
+    await open('564');
+    await reject('564', 500);
+    const emptyState = element('ui-empty-state')!;
+    emptyState.querySelector('button')!.click();
+    harness.detectChanges();
+    httpMock.expectOne(photoInfoUrl('564')).flush(picsumDto({ id: '564' }));
+    await harness.fixture.whenStable();
+    expect(element('app-photo-stage')).not.toBeNull();
+    expect(element('ui-empty-state')).toBeNull();
+  });
+
   it('requests a different photo for a different route id', async () => {
     await open('1');
     await resolve('1');
