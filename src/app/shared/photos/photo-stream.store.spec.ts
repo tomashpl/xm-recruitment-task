@@ -1,6 +1,6 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { effect, provideZonelessChangeDetection } from '@angular/core';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { PHOTO_STREAM_RETRY_DELAYS, PhotoStreamStore } from './photo-stream.store';
@@ -46,7 +46,6 @@ describe('PhotoStreamStore', () => {
 
     httpMock = TestBed.inject(HttpTestingController);
     store = TestBed.inject(PhotoStreamStore);
-    TestBed.runInInjectionContext(() => effect(() => store.photos()));
     await settle();
   });
 
@@ -75,6 +74,14 @@ describe('PhotoStreamStore', () => {
     expect(store.photos().length).toBe(60);
     expect(store.photos()[0].id).toBe('0');
     expect(store.photos()[30].id).toBe('30');
+  });
+
+  it('keeps a resolved page even when nothing reads the photos before the next one', async () => {
+    await deliver(1, 30, 2);
+    store.loadNext();
+    await deliver(2, 30, 3);
+
+    expect(store.photos().length).toBe(60);
   });
 
   it('ignores loadNext while a request is in flight', async () => {

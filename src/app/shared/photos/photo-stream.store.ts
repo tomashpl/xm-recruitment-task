@@ -6,6 +6,7 @@ import {
   computed,
   linkedSignal,
   signal,
+  untracked,
 } from '@angular/core';
 
 import { Photo } from '../../models/photo.model';
@@ -61,6 +62,7 @@ export class PhotoStreamStore {
 
   loadNext(): void {
     if (this.canLoadMore()) {
+      untracked(() => this.accumulated());
       this.requestedPage.update(page => page + 1);
     }
   }
