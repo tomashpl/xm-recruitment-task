@@ -1,3 +1,4 @@
+import { ViewportScroller } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -5,7 +6,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { provideGalleryUi } from '@gallery/ui';
 
-import { PHOTO_STREAM_RETRY_DELAYS } from '../../shared/photos/photo-stream.store';
+import {
+  PHOTO_STREAM_RETRY_DELAYS,
+  PhotoStreamStore,
+} from '../../shared/photos/photo-stream.store';
 import { PAGE_SIZE, photoListUrl } from '../../shared/photos/picsum';
 import { picsumDtoList, picsumPageHeaders } from '../../shared/photos/picsum.test-data';
 import { GRID_LAYOUT_STORAGE_KEY } from '../../shared/preferences/grid-layout';
@@ -37,6 +41,9 @@ describe('PhotoStreamPageComponent', () => {
   };
 
   beforeEach(async () => {
+    fire = () => {
+      throw new Error('no sentinel observed');
+    };
     localStorage.removeItem(GRID_LAYOUT_STORAGE_KEY);
 
     await TestBed.configureTestingModule({
@@ -209,7 +216,9 @@ describe('PhotoStreamPageComponent', () => {
 
   it('shows the sentinel while pages remain', async () => {
     await deliver(1, 3, 2);
-    expect(fixture.nativeElement.querySelector('app-stream-sentinel')).not.toBeNull();
+    const sentinel: HTMLElement = fixture.nativeElement.querySelector('app-stream-sentinel');
+    expect(sentinel).not.toBeNull();
+    expect(sentinel.closest('ul')).toBeNull();
   });
 
   it('replaces the sentinel with an end note on the last page', async () => {
@@ -261,5 +270,33 @@ describe('PhotoStreamPageComponent', () => {
     expect(fixture.nativeElement.querySelector('[role="alert"]').textContent).toContain(
       'Could not load more photos',
     );
+  });
+
+  it('remembers where the visitor was when the page goes away', async () => {
+    await deliver(1, 3, null);
+    const scroller = TestBed.inject(ViewportScroller);
+    spyOn(scroller, 'getScrollPosition').and.returnValue([0, 640]);
+
+    fixture.destroy();
+
+    expect(TestBed.inject(PhotoStreamStore).scrollOffset()).toBe(640);
+  });
+
+  it('scrolls back to the remembered offset once the grid is on screen', async () => {
+    const scroller = TestBed.inject(ViewportScroller);
+    const scrollTo = spyOn(scroller, 'scrollToPosition');
+    TestBed.inject(PhotoStreamStore).rememberScroll(640);
+
+    await deliver(1, 3, null);
+
+    expect(scrollTo).toHaveBeenCalledWith([0, 640]);
+  });
+
+  it('does not scroll when there is nothing remembered', async () => {
+    const scrollTo = spyOn(TestBed.inject(ViewportScroller), 'scrollToPosition');
+
+    await deliver(1, 3, null);
+
+    expect(scrollTo).not.toHaveBeenCalled();
   });
 });
