@@ -55,7 +55,7 @@ export class PhotoGridComponent {
     this.measured.set({
       columnWidth: item?.getBoundingClientRect().width ?? 0,
       gap: parseFloat(styles.columnGap) || 0,
-      rowUnit: parseFloat(styles.gridAutoRows) || 0,
+      rowUnit: parseFloat(styles.getPropertyValue('--app-masonry-row-unit')) || 0,
     });
   }
 
