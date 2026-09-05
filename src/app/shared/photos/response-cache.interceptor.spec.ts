@@ -99,6 +99,37 @@ describe('picsumCacheInterceptor', () => {
     expect(cache.write).not.toHaveBeenCalled();
   });
 
+  it('propagates a 404 rather than serving a stale entry', async () => {
+    cache.read.and.resolveTo({ response: apiResponse([picsumDto()]), fresh: false });
+
+    const response = firstValueFrom(http().get(url, { observe: 'response' }));
+    await settle();
+    backend().expectOne(url).flush(null, { status: 404, statusText: 'Not Found' });
+
+    await expectAsync(response).toBeRejected();
+  });
+
+  it('serves a stale entry when the network responds with a 503', async () => {
+    const body = [picsumDto()];
+    cache.read.and.resolveTo({ response: apiResponse(body, picsumPageHeaders(2)), fresh: false });
+
+    const response = firstValueFrom(http().get(url, { observe: 'response' }));
+    await settle();
+    backend().expectOne(url).flush(null, { status: 503, statusText: 'Service Unavailable' });
+
+    expect((await response).body).toEqual(body);
+    expect((await response).headers.get('link')).toBe(picsumPageHeaders(2)['Link']);
+  });
+
+  it('reaches the caller with a successful response when the body fails to parse, but does not cache it', async () => {
+    const response = firstValueFrom(http().get(url, { observe: 'response' }));
+    await settle();
+    backend().expectOne(url).flush(picsumDto());
+
+    expect((await response).status).toBe(200);
+    expect(cache.write).not.toHaveBeenCalled();
+  });
+
   it('leaves an image url alone, synchronously', async () => {
     const imageUrl = `${PICSUM_ORIGIN}/id/564/600/400`;
 

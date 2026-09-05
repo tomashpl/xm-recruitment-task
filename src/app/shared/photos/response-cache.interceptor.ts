@@ -4,11 +4,12 @@ import {
   HttpHandlerFn,
   HttpRequest,
   HttpResponse,
+  HttpSentEvent,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Observable, catchError, from, of, switchMap, tap, throwError } from 'rxjs';
 
-import { isCacheableUrl } from './response-cache';
+import { isCacheableUrl, isStorableBody, isTransportFailure } from './response-cache';
 import { ResponseCacheStore } from './response-cache.store';
 
 export function picsumCacheInterceptor(
@@ -26,16 +27,18 @@ export function picsumCacheInterceptor(
   return from(cache.read(url)).pipe(
     switchMap(cached => {
       if (cached?.fresh) {
-        return of({ type: HttpEventType.Sent } as HttpEvent<unknown>, cached.response);
+        return of({ type: HttpEventType.Sent } satisfies HttpSentEvent, cached.response);
       }
 
       return next(request).pipe(
         tap(event => {
-          if (event instanceof HttpResponse) {
+          if (event instanceof HttpResponse && isStorableBody(url, event.body)) {
             void cache.write(url, event);
           }
         }),
-        catchError(error => (cached ? of(cached.response) : throwError(() => error))),
+        catchError(error =>
+          cached && isTransportFailure(error) ? of(cached.response) : throwError(() => error),
+        ),
       );
     }),
   );

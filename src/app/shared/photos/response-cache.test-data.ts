@@ -12,6 +12,9 @@ export function apiResponse(
   });
 }
 
+type FakeCacheStorage = Pick<CacheStorage, 'open' | 'has' | 'keys' | 'delete' | 'match'>;
+type FakeCache = Pick<Cache, 'match' | 'put' | 'delete'>;
+
 export function fakeCacheStorage(): CacheStorage {
   const opened = new Map<string, Cache>();
 
@@ -28,13 +31,15 @@ export function fakeCacheStorage(): CacheStorage {
     return created;
   };
 
-  return {
+  const storage: FakeCacheStorage = {
     open: (name: string) => Promise.resolve(open(name)),
     has: (name: string) => Promise.resolve(opened.has(name)),
     keys: () => Promise.resolve([...opened.keys()]),
     delete: (name: string) => Promise.resolve(opened.delete(name)),
     match: () => Promise.resolve(undefined),
-  } as CacheStorage;
+  };
+
+  return storage as CacheStorage;
 }
 
 export function settle(): Promise<void> {
@@ -44,7 +49,7 @@ export function settle(): Promise<void> {
 function fakeCache(): Cache {
   const entries = new Map<string, Response>();
 
-  return {
+  const cache: FakeCache = {
     match: (request: RequestInfo | URL) => Promise.resolve(entries.get(String(request))?.clone()),
     put: (request: RequestInfo | URL, response: Response) => {
       entries.set(String(request), response);
@@ -52,5 +57,7 @@ function fakeCache(): Cache {
       return Promise.resolve();
     },
     delete: (request: RequestInfo | URL) => Promise.resolve(entries.delete(String(request))),
-  } as Cache;
+  };
+
+  return cache as Cache;
 }

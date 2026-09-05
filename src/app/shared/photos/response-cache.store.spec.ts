@@ -66,6 +66,9 @@ describe('ResponseCacheStore', () => {
 
     await store().write(url, apiResponse([picsumDto({ id: '1' })]));
     clock += CACHE_TTL_MS;
+
+    expect((await store().read(url))!.fresh).toBeFalse();
+
     await store().write(url, apiResponse([picsumDto({ id: '2' })]));
 
     const cached = await store().read(url);

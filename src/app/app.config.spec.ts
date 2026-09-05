@@ -47,7 +47,10 @@ describe('appConfig', () => {
 
   it('serves a cached photo without reaching the network', async () => {
     const cache = jasmine.createSpyObj<ResponseCacheStore>('ResponseCacheStore', ['read', 'write']);
-    cache.read.and.resolveTo({ response: apiResponse(picsumDto({ id: '564' })), fresh: true });
+    cache.read.and.resolveTo({
+      response: apiResponse(picsumDto({ id: '564', author: 'Ada Lovelace' })),
+      fresh: true,
+    });
     cache.write.and.resolveTo();
     TestBed.overrideProvider(ResponseCacheStore, { useValue: cache });
 
@@ -55,8 +58,14 @@ describe('appConfig', () => {
     const page = await harness.navigateByUrl('/photos/564', PhotoDetailPageComponent);
     harness.detectChanges();
     await settle();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
 
     TestBed.inject(HttpTestingController).expectNone(photoInfoUrl('564'));
     expect(page.id()).toBe('564');
+    expect(harness.routeNativeElement!.querySelector('app-photo-meta')!.textContent).toContain(
+      'Ada Lovelace',
+    );
+    expect(cache.write).not.toHaveBeenCalled();
   });
 });
