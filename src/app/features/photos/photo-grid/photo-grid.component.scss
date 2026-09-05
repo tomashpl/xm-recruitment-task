@@ -1,3 +1,5 @@
+$masonry-row-unit: 4px;
+
 :host {
   display: block;
 }
@@ -9,4 +11,9 @@ ul {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+:host(.app-photo-grid--masonry) ul {
+  grid-auto-rows: $masonry-row-unit;
+  row-gap: 0;
 }
