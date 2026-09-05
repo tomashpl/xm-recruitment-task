@@ -110,4 +110,16 @@ app-photo-grid li {
   gap: 8px;
 }
 
+.app-empty-state__cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  font-weight: 500;
+  text-decoration: none;
+}
+
 @include gallery-ui.styles;

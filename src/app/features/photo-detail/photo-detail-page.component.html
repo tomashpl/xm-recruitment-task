@@ -10,7 +10,7 @@
     <ui-loading-indicator message="Loading photo…" />
   } @else if (notFound()) {
     <ui-empty-state icon="image_not_supported" message="That photo does not exist.">
-      <a routerLink="/">Browse photos</a>
+      <a routerLink="/" class="app-empty-state__cta">Browse photos</a>
     </ui-empty-state>
   } @else if (photo.error()) {
     <ui-empty-state
