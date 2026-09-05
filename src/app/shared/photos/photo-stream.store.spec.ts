@@ -79,6 +79,8 @@ describe('PhotoStreamStore', () => {
   it('keeps a resolved page even when nothing reads the photos before the next one', async () => {
     await deliver(1, 30, 2);
     store.loadNext();
+    await fail(2);
+    store.retry();
     await deliver(2, 30, 3);
 
     expect(store.photos().length).toBe(60);
@@ -111,6 +113,17 @@ describe('PhotoStreamStore', () => {
     await deliver(1, 30, 2);
 
     expect(store.photos().length).toBe(30);
+  });
+
+  it('ignores retry once the page it would retry has already resolved', async () => {
+    await deliver(1, 30, 2);
+
+    store.retry();
+    await settle();
+
+    expect(store.photos().length).toBe(30);
+    expect(new Set(store.photos().map(photo => photo.id)).size).toBe(30);
+    httpMock.verify();
   });
 
   it('keeps the loaded photos when a later page fails', async () => {
@@ -152,6 +165,7 @@ describe('PhotoStreamStore', () => {
       await deliver(page, 30, page + 1);
     }
 
+    expect(store.photos().length).toBe(MAX_PAGES * PAGE_SIZE);
     expect(store.canLoadMore()).toBeFalse();
     store.loadNext();
     await settle();

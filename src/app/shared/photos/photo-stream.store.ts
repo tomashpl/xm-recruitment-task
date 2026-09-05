@@ -68,7 +68,9 @@ export class PhotoStreamStore {
   }
 
   retry(): void {
-    this.response.reload();
+    if (this.response.status() === 'error') {
+      this.response.reload();
+    }
   }
 
   rememberScroll(offset: number): void {
