@@ -10,16 +10,15 @@ test.describe('photostream', () => {
     );
   });
 
-  test('opens a snackbar when a tile is tapped', async ({ page }) => {
+  test('opens a snackbar and marks the tile when it is tapped', async ({ page }) => {
     await page.goto('/');
+    const tile = page.getByRole('button', { name: /photo by Ada Lovelace/ }).first();
 
-    await page
-      .getByRole('button', { name: 'Add photo by Ada Lovelace to favorites' })
-      .first()
-      .click();
+    await tile.click();
 
     await expect(page.getByText('Added photo by Ada Lovelace to favorites')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Dismiss' })).toBeVisible();
+    await expect(tile).toHaveAttribute('aria-pressed', 'true');
   });
 
   test('appends the next page when the sentinel comes into view', async ({ page, picsum }) => {

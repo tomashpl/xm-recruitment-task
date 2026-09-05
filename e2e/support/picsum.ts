@@ -16,15 +16,15 @@ export interface PicsumMock {
 
 export const test = base.extend<{ picsum: PicsumMock }>({
   picsum: [
-    async ({ page }, use) => {
+    async ({ context }, use) => {
       let totalPages = TOTAL_PAGES;
       let failureStatus: number | null = null;
       let served = 0;
 
-      await page.route('**/fonts.googleapis.com/**', route => route.abort());
-      await page.route('**/fonts.gstatic.com/**', route => route.abort());
+      await context.route('**/fonts.googleapis.com/**', route => route.abort());
+      await context.route('**/fonts.gstatic.com/**', route => route.abort());
 
-      await page.route('**/picsum.photos/v2/list*', async (route: Route) => {
+      await context.route('**/picsum.photos/v2/list*', async (route: Route) => {
         served += 1;
 
         if (failureStatus !== null) {
@@ -52,7 +52,7 @@ export const test = base.extend<{ picsum: PicsumMock }>({
         });
       });
 
-      await page.route('**/picsum.photos/id/*/info', async (route: Route) => {
+      await context.route('**/picsum.photos/id/*/info', async (route: Route) => {
         const id = new URL(route.request().url()).pathname.split('/')[2];
         const photo = photoPage(1, PAGE_SIZE).find(item => item.id === id);
 
@@ -64,7 +64,7 @@ export const test = base.extend<{ picsum: PicsumMock }>({
         });
       });
 
-      await page.route(/picsum\.photos\/id\/\d+\/\d+\/\d+/, async (route: Route) => {
+      await context.route(/picsum\.photos\/id\/\d+\/\d+\/\d+/, async (route: Route) => {
         await route.fulfill({
           status: 200,
           contentType: 'image/png',

@@ -1,3 +1,5 @@
+import { storedPhoto } from './fixtures/photos';
+import { readFavorites, seedFavorites } from './support/favorites';
 import { expect, test } from './support/picsum';
 
 test.describe('photo detail', () => {
@@ -34,5 +36,29 @@ test.describe('photo detail', () => {
     await page.getByRole('button', { name: 'Try again' }).click();
 
     await expect(page.getByText('Grace Hopper')).toBeVisible();
+  });
+
+  test('saves the photo to favorites from the detail page', async ({ page }) => {
+    await page.goto('/photos/0');
+
+    await page.getByRole('button', { name: 'Add to favorites' }).click();
+
+    await expect(page.getByText('Added photo by Ada Lovelace to favorites')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Remove from favorites' })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Favorites/ })).toHaveAccessibleName(/1 saved/);
+    expect(await readFavorites(page)).toEqual([storedPhoto('0')]);
+  });
+
+  test('removes the photo and keeps the focus on the toggle', async ({ page }) => {
+    await seedFavorites(page, '0');
+    await page.goto('/photos/0');
+
+    const toggle = page.getByRole('button', { name: 'Remove from favorites' });
+    await toggle.focus();
+    await page.keyboard.press('Enter');
+
+    await expect(page.getByRole('button', { name: 'Add to favorites' })).toBeFocused();
+    await expect(page.getByText('Removed photo by Ada Lovelace from favorites')).toBeVisible();
+    expect(await readFavorites(page)).toEqual([]);
   });
 });
