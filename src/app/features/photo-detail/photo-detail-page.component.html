@@ -3,10 +3,24 @@
 
   <div class="app-page__header">
     <ui-icon-button icon="arrow_back" label="Go back" size="sm" (activate)="goBack()" />
-    <app-photo-meta [author]="photo().author" />
+    <app-photo-meta [author]="photo.hasValue() ? photo.value()!.author : undefined" />
   </div>
 
-  <app-photo-stage [photo]="photo()" animate.enter="app-enter-fade" />
-
-  <ui-button variant="danger" icon="heart_minus">Remove from favorites</ui-button>
+  @if (photo.isLoading()) {
+    <ui-loading-indicator message="Loading photo…" />
+  } @else if (notFound()) {
+    <ui-empty-state icon="image_not_supported" message="That photo does not exist.">
+      <a routerLink="/">Browse photos</a>
+    </ui-empty-state>
+  } @else if (photo.error()) {
+    <ui-empty-state
+      icon="cloud_off"
+      message="Could not load this photo. Check your connection and try again."
+    >
+      <ui-button icon="refresh" (activate)="photo.reload()">Try again</ui-button>
+    </ui-empty-state>
+  } @else if (photo.value(); as loaded) {
+    <app-photo-stage [photo]="loaded" animate.enter="app-enter-fade" />
+    <ui-button variant="danger" icon="heart_minus">Remove from favorites</ui-button>
+  }
 </section>
