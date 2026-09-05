@@ -1,4 +1,10 @@
-<img [src]="photo().url" [alt]="photo().alt" loading="lazy" decoding="async" />
+<img
+  [src]="photo().url"
+  [alt]="photo().alt"
+  [attr.loading]="priority() ? 'eager' : 'lazy'"
+  [attr.fetchpriority]="priority() ? 'high' : null"
+  decoding="async"
+/>
 
 @if (overlay()) {
   <span class="app-photo-thumb__scrim" aria-hidden="true"></span>

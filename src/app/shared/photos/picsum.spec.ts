@@ -25,7 +25,7 @@ describe('picsum', () => {
   });
 
   it('builds an image url from the requested dimensions', () => {
-    expect(photoImageUrl('564', 600, 400)).toBe('https://picsum.photos/id/564/600/400');
+    expect(photoImageUrl('564', 600, 400)).toBe('https://picsum.photos/id/564/600/400.webp');
   });
 
   it('scales the height so the requested crop keeps the original ratio', () => {
@@ -39,7 +39,7 @@ describe('picsum', () => {
     expect(photo.id).toBe('7');
     expect(photo.width).toBe(600);
     expect(photo.height).toBe(450);
-    expect(photo.url).toBe('https://picsum.photos/id/7/600/450');
+    expect(photo.url).toBe('https://picsum.photos/id/7/600/450.webp');
   });
 
   it('derives the alternative text from the author', () => {

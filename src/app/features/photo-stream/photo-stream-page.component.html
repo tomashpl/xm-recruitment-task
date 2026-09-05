@@ -30,6 +30,7 @@
             [photo]="photo"
             [favorite]="favorites.isFavorite(photo.id)"
             [aspectRatio]="grid.ratioFor(photo)"
+            [priority]="$index < priorityTiles"
             (activate)="onActivate($event)"
           />
         </li>

@@ -1,6 +1,6 @@
 @if (isLink()) {
   <a [routerLink]="detailLink()" [attr.aria-label]="label()" [style.aspect-ratio]="aspectRatio()">
-    <app-photo-thumb [photo]="photo()" [overlay]="favorite()" />
+    <app-photo-thumb [photo]="photo()" [overlay]="favorite()" [priority]="priority()" />
     <app-favorite-badge [active]="favorite()" />
   </a>
 } @else {
@@ -15,7 +15,7 @@
     (blur)="setEngaged(false)"
     [style.aspect-ratio]="aspectRatio()"
   >
-    <app-photo-thumb [photo]="photo()" [overlay]="favorite()" />
+    <app-photo-thumb [photo]="photo()" [overlay]="favorite()" [priority]="priority()" />
     <app-favorite-badge [active]="favorite()" [expanded]="engaged()" />
   </button>
 }

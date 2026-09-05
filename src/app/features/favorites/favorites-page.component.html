@@ -26,6 +26,7 @@
             [favorite]="true"
             interaction="link"
             [aspectRatio]="grid.ratioFor(photo)"
+            [priority]="$index < priorityTiles"
           />
         </li>
       }

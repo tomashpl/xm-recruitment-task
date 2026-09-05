@@ -5,6 +5,7 @@ export const PICSUM_ORIGIN = 'https://picsum.photos';
 export const PAGE_SIZE = 30;
 export const GRID_IMAGE_WIDTH = 600;
 export const DETAIL_IMAGE_WIDTH = 1200;
+export const IMAGE_FORMAT = 'webp';
 
 export interface PicsumPhotoDto {
   readonly id: string;
@@ -28,7 +29,7 @@ export function photoInfoUrl(id: string): string {
 }
 
 export function photoImageUrl(id: string, width: number, height: number): string {
-  return `${PICSUM_ORIGIN}/id/${id}/${width}/${height}`;
+  return `${PICSUM_ORIGIN}/id/${id}/${width}/${height}.${IMAGE_FORMAT}`;
 }
 
 export function scaledHeight(dto: PicsumPhotoDto, targetWidth: number): number {

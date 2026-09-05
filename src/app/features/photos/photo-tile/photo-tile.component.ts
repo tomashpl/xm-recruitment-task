@@ -7,6 +7,8 @@ import { PhotoThumbComponent } from '../photo-thumb/photo-thumb.component';
 
 export type TileInteraction = 'toggle' | 'link';
 
+export const PRIORITY_TILE_COUNT = 6;
+
 @Component({
   selector: 'app-photo-tile',
   imports: [RouterLink, PhotoThumbComponent, FavoriteBadgeComponent],
@@ -19,6 +21,7 @@ export class PhotoTileComponent {
   readonly favorite = input(false);
   readonly interaction = input<TileInteraction>('toggle');
   readonly aspectRatio = input<string | null>(null);
+  readonly priority = input(false);
 
   readonly activate = output<Photo>();
 

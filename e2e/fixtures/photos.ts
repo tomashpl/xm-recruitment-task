@@ -66,7 +66,7 @@ export function storedPhoto(id: string): StoredPhoto {
 
   return {
     id: dto.id,
-    url: `https://picsum.photos/id/${dto.id}/${GRID_IMAGE_WIDTH}/${height}`,
+    url: `https://picsum.photos/id/${dto.id}/${GRID_IMAGE_WIDTH}/${height}.webp`,
     alt: `photo by ${dto.author}`,
     author: dto.author,
     width: GRID_IMAGE_WIDTH,

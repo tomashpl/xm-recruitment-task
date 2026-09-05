@@ -11,4 +11,5 @@ import { Photo } from '../../../models/photo.model';
 export class PhotoThumbComponent {
   readonly photo = input.required<Photo>();
   readonly overlay = input(false);
+  readonly priority = input(false);
 }

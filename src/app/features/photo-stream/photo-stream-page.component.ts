@@ -31,7 +31,7 @@ import { PhotoStreamStore } from '../../shared/photos/photo-stream.store';
 import { GridLayout, GridLayoutStore } from '../../shared/preferences/grid-layout';
 import { GridLayoutToggleComponent } from '../photos/grid-layout-toggle/grid-layout-toggle.component';
 import { PhotoGridComponent } from '../photos/photo-grid/photo-grid.component';
-import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
+import { PRIORITY_TILE_COUNT, PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
 import { StreamSentinelComponent } from '../photos/stream-sentinel/stream-sentinel.component';
 
 const RESTORE_ATTEMPTS = 5;
@@ -65,6 +65,7 @@ export class PhotoStreamPageComponent {
   protected readonly favorites = inject(FavoritesStore);
   protected readonly layout = this.gridLayout.layout;
   protected readonly restoredCount = untracked(() => this.store.photos().length);
+  protected readonly priorityTiles = PRIORITY_TILE_COUNT;
   private readonly scrollRestored = signal(false);
 
   constructor() {
