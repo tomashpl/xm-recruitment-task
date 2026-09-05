@@ -38,7 +38,9 @@
         <ui-button icon="refresh" (activate)="store.retry()">Try again</ui-button>
       </div>
     } @else if (store.isComplete()) {
-      <p class="app-stream__note">You’ve reached the end of the collection.</p>
+      <p class="app-stream__note app-stream__note--end" role="status">
+        You’ve reached the end of the collection.
+      </p>
     } @else {
       <app-stream-sentinel [loading]="store.isLoadingMore()" (activate)="store.loadNext()" />
     }

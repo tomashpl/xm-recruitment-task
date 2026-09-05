@@ -86,7 +86,7 @@ describe('PhotoStreamStore', () => {
     expect(store.photos().length).toBe(60);
   });
 
-  it('ignores loadNext while a request is in flight', async () => {
+  it('does not advance the cursor twice for one page', async () => {
     await deliver(1, 30, 2);
     store.loadNext();
     store.loadNext();
