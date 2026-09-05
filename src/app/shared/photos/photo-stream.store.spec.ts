@@ -221,7 +221,12 @@ describe('PhotoStreamStore', () => {
     });
 
     it('starts counting attempts again after a page succeeds', async () => {
+      await fail(1);
+      await settle();
+      await fail(1);
+      await settle();
       await deliver(1, 30, 2);
+
       store.loadNext();
       await fail(2);
       await settle();
