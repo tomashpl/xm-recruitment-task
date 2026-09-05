@@ -34,4 +34,18 @@ describe('ViewTabsComponent', () => {
     await fixture.whenStable();
     expect(fixture.nativeElement.querySelector('ui-badge').textContent.trim()).toBe('4');
   });
+
+  it('keeps the count out of the accessible name while nothing is saved', async () => {
+    fixture.componentRef.setInput('favoritesCount', 0);
+    await fixture.whenStable();
+    const link: HTMLAnchorElement = fixture.nativeElement.querySelector('a[href="/favorites"]');
+    expect(link.textContent).not.toContain('saved');
+  });
+
+  it('announces the count once something is saved', async () => {
+    fixture.componentRef.setInput('favoritesCount', 3);
+    await fixture.whenStable();
+    const link: HTMLAnchorElement = fixture.nativeElement.querySelector('a[href="/favorites"]');
+    expect(link.querySelector('.visually-hidden')?.textContent).toBe('3 saved');
+  });
 });

@@ -4,11 +4,16 @@ import { Router, provideRouter, withComponentInputBinding } from '@angular/route
 
 import { AppComponent } from './app.component';
 import { routes } from './app.routes';
+import { FAVORITES_STORAGE_KEY } from './shared/favorites/favorites';
+import { FavoritesStore } from './shared/favorites/favorites.store';
+import { samplePhoto } from './shared/photos/picsum.test-data';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
 
   beforeEach(async () => {
+    localStorage.removeItem(FAVORITES_STORAGE_KEY);
+
     await TestBed.configureTestingModule({
       imports: [AppComponent],
       providers: [
@@ -19,6 +24,10 @@ describe('AppComponent', () => {
 
     fixture = TestBed.createComponent(AppComponent);
     await fixture.whenStable();
+  });
+
+  afterEach(() => {
+    localStorage.removeItem(FAVORITES_STORAGE_KEY);
   });
 
   it('renders a main landmark the skip link can target', () => {
@@ -44,5 +53,14 @@ describe('AppComponent', () => {
     const main: HTMLElement = fixture.nativeElement.querySelector('main');
     expect(header).not.toBeNull();
     expect(main.contains(header)).toBeFalse();
+  });
+
+  it('counts the favorites the store holds in the header', async () => {
+    const store = TestBed.inject(FavoritesStore);
+    store.toggle(samplePhoto({ id: '1' }));
+    store.toggle(samplePhoto({ id: '2' }));
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('ui-badge').textContent).toContain('2');
   });
 });
