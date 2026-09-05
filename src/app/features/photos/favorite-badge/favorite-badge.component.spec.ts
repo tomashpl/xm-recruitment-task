@@ -1,6 +1,7 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideGalleryUi } from '@gallery/ui';
 
-import { appConfig } from '../../../app.config';
 import { FavoriteBadgeComponent } from './favorite-badge.component';
 
 describe('FavoriteBadgeComponent', () => {
@@ -11,7 +12,7 @@ describe('FavoriteBadgeComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FavoriteBadgeComponent],
-      providers: [...appConfig.providers],
+      providers: [provideZonelessChangeDetection(), provideGalleryUi()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FavoriteBadgeComponent);
@@ -20,14 +21,14 @@ describe('FavoriteBadgeComponent', () => {
 
   it('keeps the same heart glyph and leaves it unfilled while inactive', () => {
     expect(icon().textContent.trim()).toBe('favorite');
-    expect(icon().classList).not.toContain('app-icon--filled');
+    expect(icon().classList).not.toContain('ui-icon--filled');
   });
 
   it('fills the heart once active', async () => {
     fixture.componentRef.setInput('active', true);
     await fixture.whenStable();
     expect(icon().textContent.trim()).toBe('favorite');
-    expect(icon().classList).toContain('app-icon--filled');
+    expect(icon().classList).toContain('ui-icon--filled');
   });
 
   it('stays out of the accessibility tree because the tile carries the label', () => {

@@ -1,0 +1,9 @@
+<button
+  type="button"
+  matIconButton
+  [class.ui-icon-button--sm]="size() === 'sm'"
+  [attr.aria-label]="label()"
+  (click)="activate.emit()"
+>
+  <ui-icon [name]="icon()" [size]="iconSize()" />
+</button>

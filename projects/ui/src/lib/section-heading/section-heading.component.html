@@ -1,0 +1,6 @@
+<h2 [attr.id]="headingId()">
+  {{ heading() }}
+  @if (hint(); as hintText) {
+    <span class="ui-section-heading__hint">&mdash; {{ hintText }}</span>
+  }
+</h2>

@@ -1,0 +1,19 @@
+:host {
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  padding: 12dvh 24px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+ui-icon {
+  color: var(--mat-sys-outline);
+}
+
+p {
+  max-width: 34ch;
+  margin: 0;
+  font-size: 16px;
+  line-height: 24px;
+}

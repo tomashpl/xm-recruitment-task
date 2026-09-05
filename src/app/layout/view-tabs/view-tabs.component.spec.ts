@@ -1,6 +1,8 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideGalleryUi } from '@gallery/ui';
 
-import { appConfig } from '../../app.config';
 import { ViewTabsComponent } from './view-tabs.component';
 
 describe('ViewTabsComponent', () => {
@@ -9,7 +11,7 @@ describe('ViewTabsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ViewTabsComponent],
-      providers: [...appConfig.providers],
+      providers: [provideZonelessChangeDetection(), provideRouter([]), provideGalleryUi()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ViewTabsComponent);
@@ -29,6 +31,6 @@ describe('ViewTabsComponent', () => {
   it('shows the favorites count in the badge', async () => {
     fixture.componentRef.setInput('favoritesCount', 4);
     await fixture.whenStable();
-    expect(fixture.nativeElement.querySelector('app-badge').textContent.trim()).toBe('4');
+    expect(fixture.nativeElement.querySelector('ui-badge').textContent.trim()).toBe('4');
   });
 });

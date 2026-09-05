@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { Location } from '@angular/common';
+import { ButtonComponent, IconButtonComponent } from '@gallery/ui';
 
 import { Photo } from '../../models/photo.model';
 import { MOCK_DETAIL_PHOTO, MOCK_PHOTOS } from '../../shared/fixtures/mock-photos';
-import { ButtonComponent } from '../../ui/button/button.component';
-import { IconButtonComponent } from '../../ui/icon-button/icon-button.component';
 import { PhotoMetaComponent } from '../photos/photo-meta/photo-meta.component';
 import { PhotoStageComponent } from '../photos/photo-stage/photo-stage.component';
 

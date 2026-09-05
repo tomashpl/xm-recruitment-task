@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { BadgeComponent } from '@gallery/ui';
 
-import { BadgeComponent } from '../../ui/badge/badge.component';
 import { TabLinkComponent } from '../tab-link/tab-link.component';
 
 @Component({
