@@ -1,5 +1,5 @@
 @if (isLink()) {
-  <a [routerLink]="detailLink()" [attr.aria-label]="label()">
+  <a [routerLink]="detailLink()" [attr.aria-label]="label()" [style.aspect-ratio]="aspectRatio()">
     <app-photo-thumb [photo]="photo()" [overlay]="favorite()" />
     <app-favorite-badge [active]="favorite()" />
   </a>
@@ -13,6 +13,7 @@
     (mouseleave)="setEngaged(false)"
     (focus)="setEngaged(true)"
     (blur)="setEngaged(false)"
+    [style.aspect-ratio]="aspectRatio()"
   >
     <app-photo-thumb [photo]="photo()" [overlay]="favorite()" />
     <app-favorite-badge [active]="favorite()" [expanded]="engaged()" />

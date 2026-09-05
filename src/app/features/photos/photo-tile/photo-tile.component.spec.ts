@@ -93,4 +93,25 @@ describe('PhotoTileComponent', () => {
     const badge: HTMLElement = fixture.nativeElement.querySelector('app-favorite-badge span');
     expect(badge.classList).not.toContain('app-favorite-badge--expanded');
   });
+
+  it('stays square when no ratio is given', () => {
+    const control: HTMLElement = fixture.nativeElement.querySelector('button');
+    expect(control.style.aspectRatio).toBe('');
+    expect(getComputedStyle(control).aspectRatio).toBe('1 / 1');
+  });
+
+  it('takes the ratio it is given', async () => {
+    fixture.componentRef.setInput('aspectRatio', '600 / 400');
+    await fixture.whenStable();
+    const control: HTMLElement = fixture.nativeElement.querySelector('button');
+    expect(control.style.aspectRatio).toBe('600 / 400');
+  });
+
+  it('applies the ratio to the link variant too', async () => {
+    fixture.componentRef.setInput('interaction', 'link');
+    fixture.componentRef.setInput('aspectRatio', '400 / 600');
+    await fixture.whenStable();
+    const control: HTMLElement = fixture.nativeElement.querySelector('a');
+    expect(control.style.aspectRatio).toBe('400 / 600');
+  });
 });
