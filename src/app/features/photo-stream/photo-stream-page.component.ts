@@ -32,7 +32,10 @@ export class PhotoStreamPageComponent {
 
   protected onActivate(photo: Photo): void {
     this.snackBar.openFromComponent(SnackbarComponent, {
-      data: { message: `Added ${photo.alt} to favorites`, actionLabel: 'Undo' } satisfies SnackbarData,
+      data: {
+        message: `Added ${photo.alt} to favorites`,
+        actionLabel: 'Undo',
+      } satisfies SnackbarData,
       duration: 4000,
       panelClass: SNACKBAR_PANEL_CLASS,
     });

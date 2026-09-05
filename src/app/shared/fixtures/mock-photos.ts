@@ -1,8 +1,18 @@
 import { Photo } from '../../models/photo.model';
 
 const SEEDS = [
-  'ansel', 'berlin', 'coast', 'dune', 'ember', 'fjord',
-  'grove', 'harbor', 'inlet', 'juniper', 'kelp', 'lagoon',
+  'ansel',
+  'berlin',
+  'coast',
+  'dune',
+  'ember',
+  'fjord',
+  'grove',
+  'harbor',
+  'inlet',
+  'juniper',
+  'kelp',
+  'lagoon',
 ];
 
 export const MOCK_PHOTOS: readonly Photo[] = SEEDS.map(seed => ({

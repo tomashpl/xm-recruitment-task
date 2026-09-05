@@ -17,9 +17,7 @@
     "target": "ES2022",
     "module": "ES2022",
     "paths": {
-      "@gallery/ui": [
-        "./projects/ui/src/public-api.ts"
-      ]
+      "@gallery/ui": ["./projects/ui/src/public-api.ts"]
     }
   },
   "angularCompilerOptions": {

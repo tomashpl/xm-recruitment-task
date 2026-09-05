@@ -27,6 +27,7 @@ A host must do four things:
    package — `ng-package.json` ships the stylesheet as an asset, so `dist/ui/styles/` carries it.
    The rules come as a mixin rather than bare declarations because they have to outrank Angular
    Material, so the host controls where in the cascade they land — include them last.
+
 3. Register the providers once, in the application config:
 
    ```ts
@@ -39,14 +40,18 @@ A host must do four things:
 
    `provideGalleryUi()` sets the Material icon registry's default font set to
    `material-symbols-outlined`, which `ui-icon` requires.
-4. Load the Material Symbols Outlined webfont. `provideGalleryUi()` sets the font-set *class*; the
-   font *file* is the host's job, and without it every icon renders as its ligature word
+
+4. Load the Material Symbols Outlined webfont. `provideGalleryUi()` sets the font-set _class_; the
+   font _file_ is the host's job, and without it every icon renders as its ligature word
    (`favorite`, `arrow_back`, …). The application loads it from `index.html`:
 
    ```html
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Tokyo+Zoo&family=Outfit:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=swap">
+   <link rel="preconnect" href="https://fonts.googleapis.com" />
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+   <link
+     rel="stylesheet"
+     href="https://fonts.googleapis.com/css2?family=Zen+Tokyo+Zoo&family=Outfit:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=swap"
+   />
    ```
 
    Only the `Material+Symbols+Outlined` family is the library's requirement; the other families in
@@ -71,8 +76,8 @@ Passing a different `panelClass` opts out of the library's panel styling.
 
 ## Commands
 
-| Task | Command |
-| --- | --- |
-| Build the library standalone | `ng build ui` |
-| Tests, watch mode | `npm run test:ui` |
-| Tests once, CI-style | `ng test ui --watch=false --browsers=ChromeHeadless` |
+| Task                         | Command                                              |
+| ---------------------------- | ---------------------------------------------------- |
+| Build the library standalone | `ng build ui`                                        |
+| Tests, watch mode            | `npm run test:ui`                                    |
+| Tests once, CI-style         | `ng test ui --watch=false --browsers=ChromeHeadless` |

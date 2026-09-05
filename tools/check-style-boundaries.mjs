@@ -46,7 +46,9 @@ for (const { file, specifier } of scan(libraryComponents, ANGULAR_URL)) {
 const applicationStyles = globSync(`${APPLICATION_ROOT}/**/*.scss`);
 for (const { file, specifier } of scan(applicationStyles, STYLE_AT_RULE)) {
   if (specifier.includes(LIBRARY_ROOT)) {
-    violations.push(`${file}: reaches into the library by file path — '${specifier}'. Use the includePaths alias instead.`);
+    violations.push(
+      `${file}: reaches into the library by file path — '${specifier}'. Use the includePaths alias instead.`,
+    );
   }
 }
 
@@ -59,4 +61,6 @@ if (violations.length > 0) {
   process.exit(1);
 }
 
-console.log(`✔ no style boundary violations found (${libraryStyles.length + libraryComponents.length + applicationStyles.length} files checked)`);
+console.log(
+  `✔ no style boundary violations found (${libraryStyles.length + libraryComponents.length + applicationStyles.length} files checked)`,
+);

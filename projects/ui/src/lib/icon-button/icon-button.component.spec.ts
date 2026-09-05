@@ -37,8 +37,9 @@ describe('IconButtonComponent', () => {
     expect(button().getBoundingClientRect().height).toBe(28);
     expect(fixture.nativeElement.querySelector('mat-icon').style.fontSize).toBe('20px');
 
-    const touchTarget: HTMLElement =
-      fixture.nativeElement.querySelector('.mat-mdc-button-touch-target');
+    const touchTarget: HTMLElement = fixture.nativeElement.querySelector(
+      '.mat-mdc-button-touch-target',
+    );
     expect(getComputedStyle(touchTarget).position).toBe('absolute');
     expect(touchTarget.getBoundingClientRect().height).toBe(48);
   });

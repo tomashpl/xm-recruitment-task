@@ -11,23 +11,32 @@ import { PhotoStreamPageComponent } from './features/photo-stream/photo-stream-p
 describe('routes', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideZonelessChangeDetection(), provideRouter(routes, withComponentInputBinding())],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideRouter(routes, withComponentInputBinding()),
+      ],
     });
   });
 
   it('renders the photo stream at the root path', async () => {
     const harness = await RouterTestingHarness.create();
-    expect(await harness.navigateByUrl('/', PhotoStreamPageComponent)).toBeInstanceOf(PhotoStreamPageComponent);
+    expect(await harness.navigateByUrl('/', PhotoStreamPageComponent)).toBeInstanceOf(
+      PhotoStreamPageComponent,
+    );
   });
 
   it('renders the favorites page at /favorites', async () => {
     const harness = await RouterTestingHarness.create();
-    expect(await harness.navigateByUrl('/favorites', FavoritesPageComponent)).toBeInstanceOf(FavoritesPageComponent);
+    expect(await harness.navigateByUrl('/favorites', FavoritesPageComponent)).toBeInstanceOf(
+      FavoritesPageComponent,
+    );
   });
 
   it('renders the detail page at /photos/:id', async () => {
     const harness = await RouterTestingHarness.create();
-    expect(await harness.navigateByUrl('/photos/abc', PhotoDetailPageComponent)).toBeInstanceOf(PhotoDetailPageComponent);
+    expect(await harness.navigateByUrl('/photos/abc', PhotoDetailPageComponent)).toBeInstanceOf(
+      PhotoDetailPageComponent,
+    );
   });
 
   it('redirects an unknown path to the photo stream', async () => {

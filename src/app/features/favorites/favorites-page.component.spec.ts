@@ -20,12 +20,15 @@ describe('FavoritesPageComponent', () => {
   });
 
   it('renders one tile per favorite', () => {
-    expect(fixture.nativeElement.querySelectorAll('app-photo-tile').length).toBe(MOCK_FAVORITES.length);
+    expect(fixture.nativeElement.querySelectorAll('app-photo-tile').length).toBe(
+      MOCK_FAVORITES.length,
+    );
   });
 
   it('renders every favorite as a link to its detail route', () => {
-    const hrefs = Array.from<HTMLAnchorElement>(fixture.nativeElement.querySelectorAll('app-photo-tile a'))
-      .map(anchor => anchor.getAttribute('href'));
+    const hrefs = Array.from<HTMLAnchorElement>(
+      fixture.nativeElement.querySelectorAll('app-photo-tile a'),
+    ).map(anchor => anchor.getAttribute('href'));
     expect(hrefs).toEqual(MOCK_FAVORITES.map(photo => `/photos/${photo.id}`));
   });
 

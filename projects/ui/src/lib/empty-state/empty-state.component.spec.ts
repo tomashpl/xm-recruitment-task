@@ -32,7 +32,9 @@ describe('EmptyStateComponent', () => {
   });
 
   it('renders the requested icon', () => {
-    expect(fixture.nativeElement.querySelector('mat-icon').textContent.trim()).toBe('favorite_border');
+    expect(fixture.nativeElement.querySelector('mat-icon').textContent.trim()).toBe(
+      'favorite_border',
+    );
   });
 
   it('projects the action control', () => {
@@ -40,6 +42,8 @@ describe('EmptyStateComponent', () => {
   });
 
   it('keeps the decorative icon out of the accessibility tree', () => {
-    expect(fixture.nativeElement.querySelector('mat-icon').getAttribute('aria-hidden')).toBe('true');
+    expect(fixture.nativeElement.querySelector('mat-icon').getAttribute('aria-hidden')).toBe(
+      'true',
+    );
   });
 });

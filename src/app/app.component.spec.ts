@@ -11,7 +11,10 @@ describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
-      providers: [provideZonelessChangeDetection(), provideRouter(routes, withComponentInputBinding())],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideRouter(routes, withComponentInputBinding()),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppComponent);

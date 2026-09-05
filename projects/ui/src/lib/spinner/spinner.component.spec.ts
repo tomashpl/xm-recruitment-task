@@ -22,6 +22,8 @@ describe('SpinnerComponent', () => {
   });
 
   it('hides itself from assistive technology so the wrapper owns the announcement', () => {
-    expect(fixture.nativeElement.querySelector('mat-progress-spinner').getAttribute('aria-hidden')).toBe('true');
+    expect(
+      fixture.nativeElement.querySelector('mat-progress-spinner').getAttribute('aria-hidden'),
+    ).toBe('true');
   });
 });

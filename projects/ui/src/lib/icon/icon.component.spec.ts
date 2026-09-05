@@ -25,7 +25,9 @@ describe('IconComponent', () => {
   });
 
   it('is hidden from assistive technology because the host labels it', () => {
-    expect(fixture.nativeElement.querySelector('mat-icon').getAttribute('aria-hidden')).toBe('true');
+    expect(fixture.nativeElement.querySelector('mat-icon').getAttribute('aria-hidden')).toBe(
+      'true',
+    );
   });
 
   it('never transitions its own geometry, so a freshly rendered icon cannot animate in from the Material default size', () => {

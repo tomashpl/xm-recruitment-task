@@ -24,7 +24,9 @@ describe('PhotoStageComponent', () => {
   });
 
   it('carries the alternative text', () => {
-    expect(fixture.nativeElement.querySelector('img').getAttribute('alt')).toBe(MOCK_DETAIL_PHOTO.alt);
+    expect(fixture.nativeElement.querySelector('img').getAttribute('alt')).toBe(
+      MOCK_DETAIL_PHOTO.alt,
+    );
   });
 
   it('loads the single photo eagerly because it is the point of the page', () => {

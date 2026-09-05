@@ -26,11 +26,15 @@ describe('PhotoStreamPageComponent', () => {
   });
 
   it('renders one tile per fixture photo', () => {
-    expect(fixture.nativeElement.querySelectorAll('app-photo-tile').length).toBe(MOCK_PHOTOS.length);
+    expect(fixture.nativeElement.querySelectorAll('app-photo-tile').length).toBe(
+      MOCK_PHOTOS.length,
+    );
   });
 
   it('renders every tile as a toggle button, not a link', () => {
-    expect(fixture.nativeElement.querySelectorAll('button[aria-pressed]').length).toBe(MOCK_PHOTOS.length);
+    expect(fixture.nativeElement.querySelectorAll('button[aria-pressed]').length).toBe(
+      MOCK_PHOTOS.length,
+    );
   });
 
   it('shows the loading indicator beneath the grid', () => {

@@ -5,7 +5,9 @@ export const routes: Routes = [
     path: '',
     title: 'Photos',
     loadComponent: () =>
-      import('./features/photo-stream/photo-stream-page.component').then(m => m.PhotoStreamPageComponent),
+      import('./features/photo-stream/photo-stream-page.component').then(
+        m => m.PhotoStreamPageComponent,
+      ),
   },
   {
     path: 'favorites',
@@ -17,7 +19,9 @@ export const routes: Routes = [
     path: 'photos/:id',
     title: 'Photo',
     loadComponent: () =>
-      import('./features/photo-detail/photo-detail-page.component').then(m => m.PhotoDetailPageComponent),
+      import('./features/photo-detail/photo-detail-page.component').then(
+        m => m.PhotoDetailPageComponent,
+      ),
   },
   { path: '**', redirectTo: '' },
 ];

@@ -46,7 +46,9 @@ describe('TabLinkComponent', () => {
   });
 
   it('shows the outline icon and no current marker while inactive', () => {
-    expect(fixture.nativeElement.querySelector('mat-icon').textContent.trim()).toBe('favorite_border');
+    expect(fixture.nativeElement.querySelector('mat-icon').textContent.trim()).toBe(
+      'favorite_border',
+    );
     expect(anchor().getAttribute('aria-current')).toBeNull();
   });
 

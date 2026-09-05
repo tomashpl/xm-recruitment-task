@@ -2,16 +2,16 @@ describe('global theme', () => {
   const root = () => getComputedStyle(document.documentElement);
 
   const materialTokens: Record<string, string> = {
-    'primary': '#fcbf49',
+    primary: '#fcbf49',
     'on-primary': '#002133',
-    'surface': '#001b29',
+    surface: '#001b29',
     'surface-container': '#003049',
     'on-surface': '#eae2b7',
     'on-surface-variant': '#b4c4cd',
-    'outline': '#4e6c80',
+    outline: '#4e6c80',
     'secondary-container': '#08405d',
     'on-secondary-container': '#fcbf49',
-    'error': '#ff7a6b',
+    error: '#ff7a6b',
     'on-error': '#2b0700',
     'inverse-surface': '#eae2b7',
     'inverse-on-surface': '#00263a',

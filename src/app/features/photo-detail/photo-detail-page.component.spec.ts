@@ -32,7 +32,8 @@ describe('PhotoDetailPageComponent', () => {
   });
 
   it('offers the remove from favorites action', () => {
-    const button: HTMLButtonElement = harness.routeNativeElement!.querySelector('ui-button button')!;
+    const button: HTMLButtonElement =
+      harness.routeNativeElement!.querySelector('ui-button button')!;
     expect(button.textContent).toContain('Remove from favorites');
   });
 
@@ -63,8 +64,9 @@ describe('PhotoDetailPageComponent', () => {
 
   it('walks the history back when the back control is pressed', () => {
     const spy = spyOn(TestBed.inject(Location), 'back');
-    const button: HTMLButtonElement =
-      harness.routeNativeElement!.querySelector('button[aria-label="Go back"]')!;
+    const button: HTMLButtonElement = harness.routeNativeElement!.querySelector(
+      'button[aria-label="Go back"]',
+    )!;
     button.click();
     expect(spy).toHaveBeenCalledTimes(1);
   });

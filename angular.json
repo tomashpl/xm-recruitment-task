@@ -23,19 +23,12 @@
             "index": "src/index.html",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
             "scripts": [],
             "browser": "src/main.ts",
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "projects/ui/src/styles"
-              ]
+              "includePaths": ["projects/ui/src/styles"]
             }
           },
           "configurations": {
@@ -67,9 +60,7 @@
           "builder": "@angular/build:dev-server",
           "options": {
             "host": "0.0.0.0",
-            "allowedHosts": [
-              ".ts.net"
-            ]
+            "allowedHosts": [".ts.net"]
           },
           "configurations": {
             "production": {
@@ -92,28 +83,18 @@
           "options": {
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
             "scripts": [],
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "projects/ui/src/styles"
-              ]
+              "includePaths": ["projects/ui/src/styles"]
             }
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }
@@ -141,23 +122,16 @@
           "options": {
             "tsConfig": "projects/ui/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
-            "styles": [
-              "projects/ui/src/test-styles.scss"
-            ],
+            "styles": ["projects/ui/src/test-styles.scss"],
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "projects/ui/src/styles"
-              ]
+              "includePaths": ["projects/ui/src/styles"]
             }
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/ui/**/*.ts",
-              "projects/ui/**/*.html"
-            ],
+            "lintFilePatterns": ["projects/ui/**/*.ts", "projects/ui/**/*.html"],
             "eslintConfig": "projects/ui/eslint.config.js"
           }
         }
@@ -191,8 +165,6 @@
     }
   },
   "cli": {
-    "schematicCollections": [
-      "angular-eslint"
-    ]
+    "schematicCollections": ["angular-eslint"]
   }
 }

@@ -23,8 +23,9 @@ describe('ViewTabsComponent', () => {
   });
 
   it('offers exactly the photos and favorites destinations', () => {
-    const hrefs = Array.from<HTMLAnchorElement>(fixture.nativeElement.querySelectorAll('a'))
-      .map(anchor => anchor.getAttribute('href'));
+    const hrefs = Array.from<HTMLAnchorElement>(fixture.nativeElement.querySelectorAll('a')).map(
+      anchor => anchor.getAttribute('href'),
+    );
     expect(hrefs).toEqual(['/', '/favorites']);
   });
 

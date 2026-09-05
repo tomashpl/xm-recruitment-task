@@ -29,8 +29,9 @@ describe('SectionHeadingComponent', () => {
   it('renders the hint when one is given', async () => {
     fixture.componentRef.setInput('hint', 'tap a photo to save it to favorites');
     await fixture.whenStable();
-    expect(fixture.nativeElement.querySelector('.ui-section-heading__hint').textContent)
-      .toContain('tap a photo to save it to favorites');
+    expect(fixture.nativeElement.querySelector('.ui-section-heading__hint').textContent).toContain(
+      'tap a photo to save it to favorites',
+    );
   });
 
   it('applies the id so a section can be labelled by it', async () => {
