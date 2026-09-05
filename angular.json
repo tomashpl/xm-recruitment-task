@@ -134,6 +134,35 @@
             "lintFilePatterns": ["projects/ui/**/*.ts", "projects/ui/**/*.html"],
             "eslintConfig": "projects/ui/eslint.config.js"
           }
+        },
+        "storybook": {
+          "builder": "@storybook/angular:start-storybook",
+          "options": {
+            "browserTarget": "ui:build",
+            "configDir": "projects/ui/.storybook",
+            "tsConfig": "projects/ui/tsconfig.storybook.json",
+            "compodoc": false,
+            "experimentalZoneless": true,
+            "port": 6006,
+            "styles": ["projects/ui/src/test-styles.scss"],
+            "stylePreprocessorOptions": {
+              "includePaths": ["projects/ui/src/styles"]
+            }
+          }
+        },
+        "build-storybook": {
+          "builder": "@storybook/angular:build-storybook",
+          "options": {
+            "configDir": "projects/ui/.storybook",
+            "tsConfig": "projects/ui/tsconfig.storybook.json",
+            "compodoc": false,
+            "experimentalZoneless": true,
+            "outputDir": "dist/storybook",
+            "styles": ["projects/ui/src/test-styles.scss"],
+            "stylePreprocessorOptions": {
+              "includePaths": ["projects/ui/src/styles"]
+            }
+          }
         }
       }
     }
