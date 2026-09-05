@@ -33,6 +33,7 @@ describe('appConfig', () => {
     TestBed.inject(HttpTestingController)
       .expectOne(photoInfoUrl('564'))
       .flush(picsumDto({ id: '564' }));
+    await harness.fixture.whenStable();
 
     expect(page.id()).toBe('564');
   });

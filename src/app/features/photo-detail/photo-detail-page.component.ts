@@ -37,6 +37,10 @@ export class PhotoDetailPageComponent {
 
   protected readonly notFound = computed(() => this.photo.statusCode() === 404);
 
+  protected readonly author = computed(() =>
+    this.photo.hasValue() ? this.photo.value().author : undefined,
+  );
+
   protected goBack(): void {
     this.location.back();
   }

@@ -3,7 +3,7 @@
 
   <div class="app-page__header">
     <ui-icon-button icon="arrow_back" label="Go back" size="sm" (activate)="goBack()" />
-    <app-photo-meta [author]="photo.hasValue() ? photo.value()!.author : undefined" />
+    <app-photo-meta [author]="author()" />
   </div>
 
   @if (photo.isLoading()) {
