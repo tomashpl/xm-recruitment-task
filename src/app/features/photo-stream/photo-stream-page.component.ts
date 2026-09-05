@@ -1,6 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { httpResource } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
+  ButtonComponent,
+  EmptyStateComponent,
   LoadingIndicatorComponent,
   SNACKBAR_PANEL_CLASS,
   SectionHeadingComponent,
@@ -9,7 +12,7 @@ import {
 } from '@gallery/ui';
 
 import { Photo } from '../../models/photo.model';
-import { MOCK_PHOTOS } from '../../shared/fixtures/mock-photos';
+import { PAGE_SIZE, parsePhotoList, photoListUrl } from '../../shared/photos/picsum';
 import { PhotoGridComponent } from '../photos/photo-grid/photo-grid.component';
 import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
 
@@ -20,6 +23,8 @@ import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
     PhotoGridComponent,
     PhotoTileComponent,
     LoadingIndicatorComponent,
+    EmptyStateComponent,
+    ButtonComponent,
   ],
   templateUrl: './photo-stream-page.component.html',
   styleUrl: './photo-stream-page.component.scss',
@@ -28,7 +33,10 @@ import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
 export class PhotoStreamPageComponent {
   private readonly snackBar = inject(MatSnackBar);
 
-  protected readonly photos = signal<readonly Photo[]>(MOCK_PHOTOS);
+  protected readonly photos = httpResource(() => photoListUrl(1, PAGE_SIZE), {
+    parse: parsePhotoList,
+    defaultValue: [],
+  });
 
   protected onActivate(photo: Photo): void {
     this.snackBar.openFromComponent(SnackbarComponent, {
