@@ -1,0 +1,18 @@
+<div role="group" aria-label="Grid layout">
+  <button
+    type="button"
+    aria-label="Square tiles"
+    [attr.aria-pressed]="layout() === 'square'"
+    (click)="layoutChange.emit('square')"
+  >
+    <ui-icon name="grid_view" [size]="20" />
+  </button>
+  <button
+    type="button"
+    aria-label="Original proportions"
+    [attr.aria-pressed]="layout() === 'masonry'"
+    (click)="layoutChange.emit('masonry')"
+  >
+    <ui-icon name="view_quilt" [size]="20" />
+  </button>
+</div>
