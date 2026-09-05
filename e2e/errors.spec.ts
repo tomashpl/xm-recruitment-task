@@ -18,10 +18,13 @@ test.describe('errors', () => {
     await expect(
       page.getByText('Could not load photos. Check your connection and try again.'),
     ).toBeVisible({ timeout: 15_000 });
+    await expect.poll(() => picsum.listRequests(), { timeout: 15_000 }).toBeGreaterThanOrEqual(4);
 
+    const settled = picsum.listRequests();
     picsum.healList();
     await page.getByRole('button', { name: 'Try again' }).click();
 
     await expect(page.getByRole('button', { name: /to favorites/ })).toHaveCount(30);
+    expect(picsum.listRequests()).toBeGreaterThan(settled);
   });
 });

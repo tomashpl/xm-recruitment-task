@@ -59,7 +59,9 @@ createServer((request, response) => {
     'Cache-Control': 'no-store',
   });
 
-  createReadStream(file).pipe(response);
+  createReadStream(file)
+    .on('error', () => response.destroy())
+    .pipe(response);
 }).listen(PORT, '127.0.0.1', () => {
   console.log(`Serving ${ROOT} on http://127.0.0.1:${PORT}`);
 });

@@ -20,5 +20,9 @@ test.describe('scroll restoration', () => {
     await expect
       .poll(() => page.evaluate(() => window.scrollY), { timeout: 10_000 })
       .toBeGreaterThan(before - 200);
+
+    const restored = await page.evaluate(() => window.scrollY);
+    expect(restored).toBeGreaterThan(before - 200);
+    expect(restored).toBeLessThan(before + 200);
   });
 });

@@ -42,6 +42,9 @@
     },
     {
       "path": "./projects/ui/tsconfig.storybook.json"
+    },
+    {
+      "path": "./e2e/tsconfig.json"
     }
   ]
 }

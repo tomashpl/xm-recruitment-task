@@ -36,7 +36,9 @@ export const test = base.extend<{ picsum: PicsumMock }>({
           return;
         }
 
-        const requested = Number(new URL(route.request().url()).searchParams.get('page') ?? '1');
+        const url = new URL(route.request().url());
+        const requested = Number(url.searchParams.get('page') ?? '1');
+        const limit = Number(url.searchParams.get('limit') ?? PAGE_SIZE);
 
         await route.fulfill({
           status: 200,
@@ -46,7 +48,7 @@ export const test = base.extend<{ picsum: PicsumMock }>({
             'access-control-expose-headers': 'link',
             link: linkHeader(requested, totalPages),
           },
-          body: JSON.stringify(photoPage(requested, PAGE_SIZE)),
+          body: JSON.stringify(photoPage(requested, limit)),
         });
       });
 
