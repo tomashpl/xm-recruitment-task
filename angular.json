@@ -144,7 +144,7 @@
             "compodoc": false,
             "experimentalZoneless": true,
             "port": 6006,
-            "styles": ["projects/ui/src/test-styles.scss"],
+            "styles": ["projects/ui/.storybook/preview-styles.scss"],
             "stylePreprocessorOptions": {
               "includePaths": ["projects/ui/src/styles"]
             }
@@ -158,7 +158,7 @@
             "compodoc": false,
             "experimentalZoneless": true,
             "outputDir": "dist/storybook",
-            "styles": ["projects/ui/src/test-styles.scss"],
+            "styles": ["projects/ui/.storybook/preview-styles.scss"],
             "stylePreprocessorOptions": {
               "includePaths": ["projects/ui/src/styles"]
             }
