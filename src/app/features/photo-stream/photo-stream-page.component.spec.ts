@@ -304,4 +304,26 @@ describe('PhotoStreamPageComponent', () => {
 
     expect(scrollTo).not.toHaveBeenCalled();
   });
+
+  it('retries the restore on the next render when the scroll position does not stick', async () => {
+    const scroller = TestBed.inject(ViewportScroller);
+    let reads = 0;
+    spyOn(scroller, 'getScrollPosition').and.callFake((): [number, number] =>
+      reads++ === 0 ? [0, 0] : [0, 640],
+    );
+    const scrollTo = spyOn(scroller, 'scrollToPosition');
+    TestBed.inject(PhotoStreamStore).rememberScroll(640);
+
+    await deliver(1, 3, null);
+    await settle();
+
+    expect(scrollTo.calls.count()).toBeGreaterThan(1);
+    expect(scrollTo).toHaveBeenCalledWith([0, 640]);
+
+    const attemptsOnceStuck = scrollTo.calls.count();
+    await settle();
+    await settle();
+
+    expect(scrollTo.calls.count()).toBe(attemptsOnceStuck);
+  });
 });

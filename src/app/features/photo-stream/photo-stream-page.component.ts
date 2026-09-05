@@ -2,7 +2,8 @@ import { ViewportScroller } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  afterRenderEffect,
+  Injector,
+  afterNextRender,
   effect,
   inject,
   signal,
@@ -31,6 +32,8 @@ import { PhotoGridComponent } from '../photos/photo-grid/photo-grid.component';
 import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
 import { StreamSentinelComponent } from '../photos/stream-sentinel/stream-sentinel.component';
 
+const RESTORE_ATTEMPTS = 5;
+
 @Component({
   selector: 'app-photo-stream-page',
   imports: [
@@ -54,13 +57,14 @@ export class PhotoStreamPageComponent {
   private readonly viewport = inject(ViewportScroller);
   private readonly grid = viewChild(PhotoGridComponent);
   private readonly router = inject(Router);
+  private readonly injector = inject(Injector);
 
   protected readonly store = inject(PhotoStreamStore);
   protected readonly layout = this.gridLayout.layout;
   private readonly scrollRestored = signal(false);
 
   constructor() {
-    afterRenderEffect(() => this.restoreScroll());
+    effect(() => this.restoreScroll());
     effect(() => this.fillViewport());
 
     this.router.events
@@ -102,10 +106,22 @@ export class PhotoStreamPageComponent {
 
     const offset = untracked(() => this.store.scrollOffset());
 
-    if (offset > 0) {
-      this.viewport.scrollToPosition([0, offset]);
+    if (offset === 0) {
+      this.scrollRestored.set(true);
+      return;
     }
 
-    this.scrollRestored.set(true);
+    this.attemptRestore(offset, RESTORE_ATTEMPTS);
+  }
+
+  private attemptRestore(offset: number, remaining: number): void {
+    this.viewport.scrollToPosition([0, offset]);
+
+    if (this.viewport.getScrollPosition()[1] >= offset || remaining === 0) {
+      this.scrollRestored.set(true);
+      return;
+    }
+
+    afterNextRender(() => this.attemptRestore(offset, remaining - 1), { injector: this.injector });
   }
 }
