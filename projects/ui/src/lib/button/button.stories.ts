@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/angular';
+import { action } from 'storybook/actions';
 
 import { ButtonComponent } from './button.component';
 
@@ -10,8 +11,8 @@ const meta: Meta<ButtonComponent> = {
   },
   args: { variant: 'filled', icon: undefined, label: undefined },
   render: args => ({
-    props: args,
-    template: `<ui-button [variant]="variant" [icon]="icon" [label]="label">Save to favorites</ui-button>`,
+    props: { ...args, onActivate: action('activate') },
+    template: `<ui-button [variant]="variant" [icon]="icon" [label]="label" (activate)="onActivate()">Save to favorites</ui-button>`,
   }),
 };
 

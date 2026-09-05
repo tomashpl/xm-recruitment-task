@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/angular';
+import { action } from 'storybook/actions';
 
 import { IconButtonComponent } from './icon-button.component';
 
@@ -9,6 +10,10 @@ const meta: Meta<IconButtonComponent> = {
     size: { control: 'inline-radio', options: ['md', 'sm'] },
   },
   args: { icon: 'arrow_back', label: 'Go back', size: 'md' },
+  render: args => ({
+    props: { ...args, onActivate: action('activate') },
+    template: `<ui-icon-button [icon]="icon" [label]="label" [size]="size" (activate)="onActivate()" />`,
+  }),
 };
 
 export default meta;
