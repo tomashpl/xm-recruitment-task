@@ -30,6 +30,20 @@ describe('favorites storage', () => {
     expect(parseFavorites(raw)).toEqual([valid]);
   });
 
+  it('drops a record whose field has the wrong type', () => {
+    const valid = samplePhoto({ id: '7' });
+    const raw = JSON.stringify([{ ...valid, width: '5000' }]);
+    expect(parseFavorites(raw)).toEqual([]);
+  });
+
+  it('de-duplicates by id, keeping the first occurrence', () => {
+    const first = samplePhoto({ id: '7', alt: 'first' });
+    const duplicate = samplePhoto({ id: '7', alt: 'duplicate' });
+    const other = samplePhoto({ id: '8' });
+    const raw = JSON.stringify([first, duplicate, other]);
+    expect(parseFavorites(raw)).toEqual([first, other]);
+  });
+
   it('round-trips a list through storage', () => {
     const photos = [samplePhoto({ id: '1' }), samplePhoto({ id: '2' })];
     expect(parseFavorites(serializeFavorites(photos))).toEqual(photos);

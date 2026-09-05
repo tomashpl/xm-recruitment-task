@@ -15,7 +15,7 @@ export function parseFavorites(raw: string | null): readonly Photo[] {
     return [];
   }
 
-  return Array.isArray(parsed) ? parsed.filter(isPhoto) : [];
+  return Array.isArray(parsed) ? dedupeById(parsed.filter(isPhoto)) : [];
 }
 
 export function serializeFavorites(photos: readonly Photo[]): string {
@@ -24,6 +24,19 @@ export function serializeFavorites(photos: readonly Photo[]): string {
 
 export function favoriteMessage(photo: Photo, added: boolean): string {
   return added ? `Added ${photo.alt} to favorites` : `Removed ${photo.alt} from favorites`;
+}
+
+function dedupeById(photos: readonly Photo[]): readonly Photo[] {
+  const seen = new Set<string>();
+
+  return photos.filter(photo => {
+    if (seen.has(photo.id)) {
+      return false;
+    }
+
+    seen.add(photo.id);
+    return true;
+  });
 }
 
 function isPhoto(value: unknown): value is Photo {
