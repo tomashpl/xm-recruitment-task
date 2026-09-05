@@ -13,6 +13,8 @@ import {
 
 import { Photo } from '../../models/photo.model';
 import { PAGE_SIZE, parsePhotoList, photoListUrl } from '../../shared/photos/picsum';
+import { GridLayout, GridLayoutStore } from '../../shared/preferences/grid-layout';
+import { GridLayoutToggleComponent } from '../photos/grid-layout-toggle/grid-layout-toggle.component';
 import { PhotoGridComponent } from '../photos/photo-grid/photo-grid.component';
 import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
 
@@ -20,6 +22,7 @@ import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
   selector: 'app-photo-stream-page',
   imports: [
     SectionHeadingComponent,
+    GridLayoutToggleComponent,
     PhotoGridComponent,
     PhotoTileComponent,
     LoadingIndicatorComponent,
@@ -32,11 +35,18 @@ import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
 })
 export class PhotoStreamPageComponent {
   private readonly snackBar = inject(MatSnackBar);
+  private readonly gridLayout = inject(GridLayoutStore);
 
   protected readonly photos = httpResource(() => photoListUrl(1, PAGE_SIZE), {
     parse: parsePhotoList,
     defaultValue: [],
   });
+
+  protected readonly layout = this.gridLayout.layout;
+
+  protected onLayoutChange(layout: GridLayout): void {
+    this.gridLayout.set(layout);
+  }
 
   protected onActivate(photo: Photo): void {
     this.snackBar.openFromComponent(SnackbarComponent, {

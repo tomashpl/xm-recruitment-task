@@ -18,6 +18,7 @@ export class PhotoTileComponent {
   readonly photo = input.required<Photo>();
   readonly favorite = input(false);
   readonly interaction = input<TileInteraction>('toggle');
+  readonly aspectRatio = input<string | null>(null);
 
   readonly activate = output<Photo>();
 
