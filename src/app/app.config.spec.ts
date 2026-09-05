@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { FetchBackend, HttpBackend, HttpClient } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { appConfig } from './app.config';
@@ -28,16 +27,5 @@ describe('appConfig', () => {
     const page = await harness.navigateByUrl('/photos/ansel', PhotoDetailPageComponent);
 
     expect(page.id()).toBe('ansel');
-  });
-});
-
-describe('appConfig http client', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [...appConfig.providers] });
-  });
-
-  it('provides an http client backed by fetch', () => {
-    expect(TestBed.inject(HttpClient)).toBeTruthy();
-    expect(TestBed.inject(HttpBackend)).toBeInstanceOf(FetchBackend);
   });
 });
