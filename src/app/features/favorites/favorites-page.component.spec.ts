@@ -83,6 +83,15 @@ describe('FavoritesPageComponent', () => {
     expect(header.querySelector('app-grid-layout-toggle')).not.toBeNull();
   });
 
+  it('pushes the layout toggle to the header edge, matching the photostream', async () => {
+    const saved = await render(samplePhoto({ id: '7' }));
+    const header: HTMLElement = saved.nativeElement.querySelector('.app-page__header');
+    const toggle: HTMLElement = saved.nativeElement.querySelector('app-grid-layout-toggle');
+    const headerRect = header.getBoundingClientRect();
+    const toggleRect = toggle.getBoundingClientRect();
+    expect(headerRect.right - toggleRect.right).toBeLessThan(2);
+  });
+
   it('honours the layout the visitor chose in the photostream', async () => {
     localStorage.setItem(GRID_LAYOUT_STORAGE_KEY, 'masonry');
     const saved = await render(samplePhoto({ id: '7' }));
