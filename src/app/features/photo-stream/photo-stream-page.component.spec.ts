@@ -13,7 +13,7 @@ import {
 } from '../../shared/photos/photo-stream.store';
 import { PAGE_SIZE, photoListUrl } from '../../shared/photos/picsum';
 import { picsumDtoList, picsumPageHeaders } from '../../shared/photos/picsum.test-data';
-import { GRID_LAYOUT_STORAGE_KEY } from '../../shared/preferences/grid-layout';
+import { GRID_LAYOUT_STORAGE_KEY, GridLayoutStore } from '../../shared/preferences/grid-layout';
 import {
   INTERSECTION_OBSERVER_FACTORY,
   IntersectionObserverFactory,
@@ -280,7 +280,10 @@ describe('PhotoStreamPageComponent', () => {
   it('remembers the scroll position when navigation starts, not when the component is destroyed', async () => {
     await deliver(1, 3, null);
     const scroller = TestBed.inject(ViewportScroller);
-    spyOn(scroller, 'getScrollPosition').and.returnValue([0, 640]);
+    let reads = 0;
+    spyOn(scroller, 'getScrollPosition').and.callFake((): [number, number] =>
+      reads++ === 0 ? [0, 640] : [0, 0],
+    );
 
     await TestBed.inject(Router).navigateByUrl('/favorites');
 
@@ -325,5 +328,45 @@ describe('PhotoStreamPageComponent', () => {
     await settle();
 
     expect(scrollTo.calls.count()).toBe(attemptsOnceStuck);
+  });
+
+  it('does not resume the restore once a second attempt has already settled it', async () => {
+    const scroller = TestBed.inject(ViewportScroller);
+    const gridLayout = TestBed.inject(GridLayoutStore);
+    let reads = 0;
+    spyOn(scroller, 'getScrollPosition').and.callFake((): [number, number] => {
+      reads++;
+      if (reads === 2) {
+        gridLayout.set('masonry');
+      }
+      return [0, 0];
+    });
+    const scrollTo = spyOn(scroller, 'scrollToPosition');
+    TestBed.inject(PhotoStreamStore).rememberScroll(640);
+
+    await deliver(1, 3, null);
+    await settle();
+    await settle();
+    await settle();
+
+    expect(scrollTo.calls.count()).toBe(10);
+  });
+
+  it('stops retrying the restore once the attempt budget is exhausted', async () => {
+    const scroller = TestBed.inject(ViewportScroller);
+    spyOn(scroller, 'getScrollPosition').and.returnValue([0, 0]);
+    const scrollTo = spyOn(scroller, 'scrollToPosition');
+    TestBed.inject(PhotoStreamStore).rememberScroll(640);
+
+    await deliver(1, 3, null);
+    for (let i = 0; i < 8; i++) {
+      await settle();
+    }
+
+    const exhausted = scrollTo.calls.count();
+    await settle();
+    await settle();
+
+    expect(scrollTo.calls.count()).toBe(exhausted);
   });
 });

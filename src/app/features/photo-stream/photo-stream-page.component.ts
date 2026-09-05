@@ -115,6 +115,10 @@ export class PhotoStreamPageComponent {
   }
 
   private attemptRestore(offset: number, remaining: number): void {
+    if (untracked(() => this.scrollRestored())) {
+      return;
+    }
+
     this.viewport.scrollToPosition([0, offset]);
 
     if (this.viewport.getScrollPosition()[1] >= offset || remaining === 0) {
