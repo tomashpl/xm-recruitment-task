@@ -87,4 +87,12 @@ describe('FavoritesStore', () => {
     window.dispatchEvent(new StorageEvent('storage', { key: 'gallery.grid-layout' }));
     expect(created.photos()).toEqual([]);
   });
+
+  it('clears the list when another tab clears storage', () => {
+    localStorage.setItem(FAVORITES_STORAGE_KEY, serializeFavorites([samplePhoto({ id: '5' })]));
+    const created = store();
+    localStorage.clear();
+    window.dispatchEvent(new StorageEvent('storage', { key: null }));
+    expect(created.photos()).toEqual([]);
+  });
 });
