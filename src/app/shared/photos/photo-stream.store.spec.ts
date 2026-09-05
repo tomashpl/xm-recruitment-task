@@ -178,4 +178,56 @@ describe('PhotoStreamStore', () => {
 
     await deliver(1, 30, 2);
   });
+
+  describe('with automatic retries configured', () => {
+    beforeEach(async () => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [
+          provideZonelessChangeDetection(),
+          provideHttpClient(),
+          provideHttpClientTesting(),
+          { provide: PHOTO_STREAM_RETRY_DELAYS, useValue: [0, 0] },
+        ],
+      });
+
+      httpMock = TestBed.inject(HttpTestingController);
+      store = TestBed.inject(PhotoStreamStore);
+      await settle();
+    });
+
+    it('retries a failed page on its own and appends it when it succeeds', async () => {
+      await fail(1);
+      await settle();
+      await deliver(1, 30, 2);
+
+      expect(store.photos().length).toBe(30);
+      expect(store.fatalError()).toBeFalse();
+    });
+
+    it('gives up after the configured delays and still accepts a manual retry', async () => {
+      await fail(1);
+      await settle();
+      await fail(1);
+      await settle();
+      await fail(1);
+      await settle();
+
+      expect(store.fatalError()).toBeTrue();
+
+      store.retry();
+      await deliver(1, 30, 2);
+      expect(store.photos().length).toBe(30);
+    });
+
+    it('starts counting attempts again after a page succeeds', async () => {
+      await deliver(1, 30, 2);
+      store.loadNext();
+      await fail(2);
+      await settle();
+      await deliver(2, 30, 3);
+
+      expect(store.photos().length).toBe(60);
+    });
+  });
 });

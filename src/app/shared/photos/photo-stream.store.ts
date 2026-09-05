@@ -1,9 +1,12 @@
 import { httpResource } from '@angular/common/http';
 import {
+  DestroyRef,
   Injectable,
   InjectionToken,
   ResourceStatus,
   computed,
+  effect,
+  inject,
   linkedSignal,
   signal,
   untracked,
@@ -28,6 +31,9 @@ const NO_PHOTOS: readonly Photo[] = [];
 export class PhotoStreamStore {
   private readonly requestedPage = signal(1);
   private readonly offset = signal(0);
+  private readonly retryDelays = inject(PHOTO_STREAM_RETRY_DELAYS);
+  private readonly attempt = signal(0);
+  private retryTimer: ReturnType<typeof setTimeout> | undefined;
 
   private readonly response = httpResource(() => photoListUrl(this.requestedPage(), PAGE_SIZE), {
     parse: parsePhotoList,
@@ -60,6 +66,11 @@ export class PhotoStreamStore {
   readonly inlineError = computed(() => !!this.response.error() && this.photos().length > 0);
   readonly fatalError = computed(() => !!this.response.error() && this.photos().length === 0);
 
+  constructor() {
+    effect(() => this.scheduleRetry(this.response.status()));
+    inject(DestroyRef).onDestroy(() => this.clearRetry());
+  }
+
   loadNext(): void {
     if (this.canLoadMore()) {
       untracked(() => this.accumulated());
@@ -68,12 +79,42 @@ export class PhotoStreamStore {
   }
 
   retry(): void {
-    if (this.response.status() === 'error') {
-      this.response.reload();
+    if (this.response.status() !== 'error') {
+      return;
     }
+
+    this.clearRetry();
+    this.attempt.set(0);
+    this.response.reload();
   }
 
   rememberScroll(offset: number): void {
     this.offset.set(offset);
+  }
+
+  private scheduleRetry(status: ResourceStatus): void {
+    if (status === 'resolved') {
+      untracked(() => this.attempt.set(0));
+      return;
+    }
+
+    if (status !== 'error') {
+      return;
+    }
+
+    const delay = this.retryDelays[untracked(() => this.attempt())];
+
+    if (delay === undefined) {
+      return;
+    }
+
+    untracked(() => this.attempt.update(count => count + 1));
+    this.clearRetry();
+    this.retryTimer = setTimeout(() => this.response.reload(), delay);
+  }
+
+  private clearRetry(): void {
+    clearTimeout(this.retryTimer);
+    this.retryTimer = undefined;
   }
 }
