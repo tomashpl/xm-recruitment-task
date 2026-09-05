@@ -7,6 +7,7 @@ import { provideGalleryUi } from '@gallery/ui';
 
 import { PAGE_SIZE, photoListUrl } from '../../shared/photos/picsum';
 import { picsumDtoList } from '../../shared/photos/picsum.test-data';
+import { GRID_LAYOUT_STORAGE_KEY } from '../../shared/preferences/grid-layout';
 import { PhotoStreamPageComponent } from './photo-stream-page.component';
 
 describe('PhotoStreamPageComponent', () => {
@@ -14,6 +15,8 @@ describe('PhotoStreamPageComponent', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(async () => {
+    localStorage.removeItem(GRID_LAYOUT_STORAGE_KEY);
+
     await TestBed.configureTestingModule({
       imports: [PhotoStreamPageComponent],
       providers: [
@@ -31,6 +34,7 @@ describe('PhotoStreamPageComponent', () => {
 
   afterEach(() => {
     httpMock.verify();
+    localStorage.removeItem(GRID_LAYOUT_STORAGE_KEY);
   });
 
   async function respondWith(count: number): Promise<void> {
@@ -65,7 +69,9 @@ describe('PhotoStreamPageComponent', () => {
 
   it('renders every tile as a toggle button, not a link', async () => {
     await respondWith(4);
-    expect(fixture.nativeElement.querySelectorAll('button[aria-pressed]').length).toBe(4);
+    expect(
+      fixture.nativeElement.querySelectorAll('app-photo-tile button[aria-pressed]').length,
+    ).toBe(4);
   });
 
   it('shows the loading indicator while the request is in flight', () => {
@@ -100,8 +106,59 @@ describe('PhotoStreamPageComponent', () => {
     await respondWith(2);
     const snackBar = TestBed.inject(MatSnackBar);
     const spy = spyOn(snackBar, 'openFromComponent').and.callThrough();
-    fixture.nativeElement.querySelector('button[aria-pressed]').click();
+    fixture.nativeElement.querySelector('app-photo-tile button[aria-pressed]').click();
     expect(spy).toHaveBeenCalledTimes(1);
     snackBar.dismiss();
+  });
+  it('offers the layout toggle beside the heading', async () => {
+    await respondWith(3);
+    const header: HTMLElement = fixture.nativeElement.querySelector('.app-page__header');
+    expect(header.querySelector('app-grid-layout-toggle')).not.toBeNull();
+  });
+
+  it('starts in the square layout', async () => {
+    await respondWith(3);
+    const grid: HTMLElement = fixture.nativeElement.querySelector('app-photo-grid');
+    expect(grid.classList).not.toContain('app-photo-grid--masonry');
+  });
+
+  it('switches the grid to masonry when the control is pressed', async () => {
+    await respondWith(3);
+    const masonryButton: HTMLButtonElement = fixture.nativeElement.querySelector(
+      'app-grid-layout-toggle button[aria-label="Original proportions"]',
+    );
+
+    masonryButton.click();
+    await fixture.whenStable();
+
+    const grid: HTMLElement = fixture.nativeElement.querySelector('app-photo-grid');
+    expect(grid.classList).toContain('app-photo-grid--masonry');
+    expect(masonryButton.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('remembers the chosen layout', async () => {
+    await respondWith(3);
+    fixture.nativeElement
+      .querySelector('app-grid-layout-toggle button[aria-label="Original proportions"]')
+      .click();
+    await fixture.whenStable();
+
+    expect(localStorage.getItem(GRID_LAYOUT_STORAGE_KEY)).toBe('masonry');
+  });
+
+  it('gives every tile its own ratio in the masonry layout', async () => {
+    await respondWith(3);
+    fixture.nativeElement
+      .querySelector('app-grid-layout-toggle button[aria-label="Original proportions"]')
+      .click();
+    await fixture.whenStable();
+
+    const controls: HTMLElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('app-photo-tile button'),
+    );
+    expect(controls.length).toBe(3);
+    for (const control of controls) {
+      expect(control.style.aspectRatio).toBe('600 / 400');
+    }
   });
 });

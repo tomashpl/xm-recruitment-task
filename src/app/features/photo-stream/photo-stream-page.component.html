@@ -5,6 +5,7 @@
       heading="Random photostream"
       hint="tap a photo to save it to favorites"
     />
+    <app-grid-layout-toggle [layout]="layout()" (layoutChange)="onLayoutChange($event)" />
   </div>
 
   @if (photos.isLoading()) {
@@ -19,10 +20,14 @@
       <ui-button icon="refresh" (activate)="photos.reload()">Try again</ui-button>
     </ui-empty-state>
   } @else {
-    <app-photo-grid>
+    <app-photo-grid #grid [layout]="layout()">
       @for (photo of photos.value(); track photo.id) {
-        <li animate.enter="app-enter-fade">
-          <app-photo-tile [photo]="photo" (activate)="onActivate($event)" />
+        <li animate.enter="app-enter-fade" [style.grid-row-end]="grid.spanFor(photo)">
+          <app-photo-tile
+            [photo]="photo"
+            [aspectRatio]="grid.ratioFor(photo)"
+            (activate)="onActivate($event)"
+          />
         </li>
       }
     </app-photo-grid>
