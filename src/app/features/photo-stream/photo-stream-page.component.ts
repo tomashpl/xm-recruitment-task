@@ -1,5 +1,11 @@
-import { httpResource } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   ButtonComponent,
@@ -12,11 +18,12 @@ import {
 } from '@gallery/ui';
 
 import { Photo } from '../../models/photo.model';
-import { PAGE_SIZE, parsePhotoList, photoListUrl } from '../../shared/photos/picsum';
+import { PhotoStreamStore } from '../../shared/photos/photo-stream.store';
 import { GridLayout, GridLayoutStore } from '../../shared/preferences/grid-layout';
 import { GridLayoutToggleComponent } from '../photos/grid-layout-toggle/grid-layout-toggle.component';
 import { PhotoGridComponent } from '../photos/photo-grid/photo-grid.component';
 import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
+import { StreamSentinelComponent } from '../photos/stream-sentinel/stream-sentinel.component';
 
 @Component({
   selector: 'app-photo-stream-page',
@@ -25,6 +32,7 @@ import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
     GridLayoutToggleComponent,
     PhotoGridComponent,
     PhotoTileComponent,
+    StreamSentinelComponent,
     LoadingIndicatorComponent,
     EmptyStateComponent,
     ButtonComponent,
@@ -36,13 +44,15 @@ import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
 export class PhotoStreamPageComponent {
   private readonly snackBar = inject(MatSnackBar);
   private readonly gridLayout = inject(GridLayoutStore);
+  private readonly sentinel = viewChild(StreamSentinelComponent);
 
-  protected readonly photos = httpResource(() => photoListUrl(1, PAGE_SIZE), {
-    parse: parsePhotoList,
-    defaultValue: [],
-  });
-
+  protected readonly store = inject(PhotoStreamStore);
   protected readonly layout = this.gridLayout.layout;
+  private readonly scrollRestored = signal(true);
+
+  constructor() {
+    effect(() => this.fillViewport());
+  }
 
   protected onLayoutChange(layout: GridLayout): void {
     this.gridLayout.set(layout);
@@ -57,5 +67,11 @@ export class PhotoStreamPageComponent {
       duration: 4000,
       panelClass: SNACKBAR_PANEL_CLASS,
     });
+  }
+
+  private fillViewport(): void {
+    if (this.scrollRestored() && this.sentinel()?.visible() && this.store.canLoadMore()) {
+      this.store.loadNext();
+    }
   }
 }
