@@ -46,7 +46,9 @@ describe('PhotoStreamPageComponent', () => {
   }
 
   it('requests the first page of photos on creation', () => {
-    httpMock.expectOne(photoListUrl(1, PAGE_SIZE)).flush(picsumDtoList(0));
+    const request = httpMock.expectOne(photoListUrl(1, PAGE_SIZE));
+    expect(request.request.method).toBe('GET');
+    request.flush(picsumDtoList(0));
   });
 
   it('labels the section by its heading', async () => {
