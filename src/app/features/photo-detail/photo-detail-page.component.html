@@ -21,14 +21,12 @@
     </ui-empty-state>
   } @else if (photo.value(); as loaded) {
     <app-photo-stage [photo]="loaded" animate.enter="app-enter-fade" />
-    @if (isFavorite()) {
-      <ui-button variant="danger" icon="heart_minus" (activate)="onToggleFavorite(loaded)">
-        Remove from favorites
-      </ui-button>
-    } @else {
-      <ui-button icon="heart_plus" (activate)="onToggleFavorite(loaded)"
-        >Add to favorites</ui-button
-      >
-    }
+    <ui-button
+      [variant]="isFavorite() ? 'danger' : 'filled'"
+      [icon]="isFavorite() ? 'heart_minus' : 'heart_plus'"
+      (activate)="onToggleFavorite(loaded)"
+    >
+      {{ isFavorite() ? 'Remove from favorites' : 'Add to favorites' }}
+    </ui-button>
   }
 </section>

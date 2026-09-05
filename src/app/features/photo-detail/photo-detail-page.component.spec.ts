@@ -142,6 +142,18 @@ describe('PhotoDetailPageComponent', () => {
     TestBed.inject(MatSnackBar).dismiss();
   });
 
+  it('keeps focus on the favorite button after it is activated', async () => {
+    await open('564');
+    await resolve('564');
+    const button = element('ui-button button')!;
+    button.focus();
+    button.click();
+    await harness.fixture.whenStable();
+
+    expect(document.activeElement).toBe(button);
+    TestBed.inject(MatSnackBar).dismiss();
+  });
+
   it('removes a photo it already holds', async () => {
     await open('564');
     await resolve('564');
