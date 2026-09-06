@@ -1,10 +1,18 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
   min-height: 100dvh;
 }
 
 main {
+  position: relative;
+  z-index: 1;
   display: block;
+  flex: 1 1 auto;
+  background: color-mix(in srgb, var(--mat-sys-surface) 42%, transparent);
+}
+
+.app-main__content {
   width: min(100%, var(--app-content-width));
   margin-inline: auto;
   padding: 12px 12px calc(24px + env(safe-area-inset-bottom));

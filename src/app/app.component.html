@@ -1,9 +1,13 @@
+<app-animated-background />
+
 <app-skip-link target="main-content" />
 
 <app-header [favoritesCount]="favorites.count()" />
 
 <main id="main-content" tabindex="-1">
-  <router-outlet />
+  <div class="app-main__content">
+    <router-outlet />
+  </div>
 </main>
 
 <div role="status" aria-live="polite" class="visually-hidden"></div>
