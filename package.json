@@ -18,6 +18,7 @@
     "format:check": "prettier --check .",
     "depcruise": "depcruise src projects --config .dependency-cruiser.cjs",
     "check:styles": "node tools/check-style-boundaries.mjs",
+    "check:icons": "node tools/check-icon-subset.mjs",
     "prepare": "husky"
   },
   "private": true,

@@ -20,6 +20,7 @@ import {
   INTERSECTION_OBSERVER_FACTORY,
   IntersectionObserverFactory,
 } from '../photos/intersection-observer';
+import { PRIORITY_TILE_COUNT } from '../photos/photo-tile/photo-tile.component';
 import { PhotoStreamPageComponent } from './photo-stream-page.component';
 
 @Component({ selector: 'app-favorites-stub', template: '' })
@@ -115,6 +116,20 @@ describe('PhotoStreamPageComponent', () => {
 
   const enteringItems = (): HTMLElement[] =>
     Array.from(fixture.nativeElement.querySelectorAll('li.app-enter-fade'));
+
+  const thumbImages = (): HTMLImageElement[] =>
+    Array.from(fixture.nativeElement.querySelectorAll('app-photo-thumb img'));
+
+  it('loads the first tiles eagerly so the largest paint is not deferred', async () => {
+    await respondWith(PRIORITY_TILE_COUNT + 2);
+    const loading = thumbImages().map(image => image.getAttribute('loading'));
+
+    expect(loading.length).toBe(PRIORITY_TILE_COUNT + 2);
+    expect(loading.slice(0, PRIORITY_TILE_COUNT)).toEqual(
+      Array<string>(PRIORITY_TILE_COUNT).fill('eager'),
+    );
+    expect(loading.slice(PRIORITY_TILE_COUNT)).toEqual(['lazy', 'lazy']);
+  });
 
   it('requests the first page of photos on creation', () => {
     const request = httpMock.expectOne(photoListUrl(1, PAGE_SIZE));

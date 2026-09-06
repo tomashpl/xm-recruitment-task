@@ -40,6 +40,9 @@ jobs:
       - name: Check style boundaries
         run: npm run check:styles
 
+      - name: Check the icon subset
+        run: npm run check:icons
+
       - name: Run tests
         run: npm run test:all
 

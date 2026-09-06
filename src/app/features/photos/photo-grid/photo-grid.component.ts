@@ -17,6 +17,9 @@ import { GridMetrics, masonrySpan, photoAspectRatio } from '../masonry';
 
 const UNMEASURED: GridMetrics = { columnWidth: 0, gap: 0, rowUnit: 0 };
 
+export const GRID_TILE_SIZES =
+  '(min-width: 1160px) 221px, (min-width: 806px) calc(20vw - 11px), (min-width: 480px) 33vw, 50vw';
+
 @Component({
   selector: 'app-photo-grid',
   templateUrl: './photo-grid.component.html',

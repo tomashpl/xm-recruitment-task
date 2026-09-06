@@ -1,6 +1,7 @@
 import {
   DETAIL_IMAGE_WIDTH,
   GRID_IMAGE_WIDTH,
+  GRID_IMAGE_WIDTHS,
   MAX_PAGES,
   PAGE_SIZE,
   hasNextPage,
@@ -9,6 +10,8 @@ import {
   photoImageUrl,
   photoInfoUrl,
   photoListUrl,
+  photoSrcset,
+  rescaledHeight,
   rescalePhoto,
   scaledHeight,
   toPhoto,
@@ -25,7 +28,7 @@ describe('picsum', () => {
   });
 
   it('builds an image url from the requested dimensions', () => {
-    expect(photoImageUrl('564', 600, 400)).toBe('https://picsum.photos/id/564/600/400');
+    expect(photoImageUrl('564', 600, 400)).toBe('https://picsum.photos/id/564/600/400.webp');
   });
 
   it('scales the height so the requested crop keeps the original ratio', () => {
@@ -39,7 +42,7 @@ describe('picsum', () => {
     expect(photo.id).toBe('7');
     expect(photo.width).toBe(600);
     expect(photo.height).toBe(450);
-    expect(photo.url).toBe('https://picsum.photos/id/7/600/450');
+    expect(photo.url).toBe('https://picsum.photos/id/7/600/450.webp');
   });
 
   it('derives the alternative text from the author', () => {
@@ -118,6 +121,35 @@ describe('picsum', () => {
 
   it('caps the pages it will ever request above the size of the collection', () => {
     expect(MAX_PAGES).toBeGreaterThan(34);
+  });
+
+  describe('photoSrcset', () => {
+    it('offers one candidate per grid width, each with a w descriptor', () => {
+      const photo = toPhoto(picsumDto({ id: '7', width: 4000, height: 3000 }), GRID_IMAGE_WIDTH);
+
+      expect(photoSrcset(photo)).toBe(
+        'https://picsum.photos/id/7/240/180.webp 240w, ' +
+          'https://picsum.photos/id/7/320/240.webp 320w, ' +
+          'https://picsum.photos/id/7/480/360.webp 480w, ' +
+          'https://picsum.photos/id/7/600/450.webp 600w',
+      );
+    });
+
+    it('keeps the ratio of the photo in every candidate', () => {
+      const photo = toPhoto(picsumDto({ width: 1000, height: 1500 }), GRID_IMAGE_WIDTH);
+
+      expect(photoSrcset(photo, [200, 400])).toBe(
+        'https://picsum.photos/id/0/200/300.webp 200w, https://picsum.photos/id/0/400/600.webp 400w',
+      );
+    });
+
+    it('reaches the width the model already asks for, so no candidate is missing', () => {
+      expect(GRID_IMAGE_WIDTHS).toContain(GRID_IMAGE_WIDTH);
+    });
+
+    it('scales a height off the model rather than off the dto', () => {
+      expect(rescaledHeight(samplePhoto(), 300)).toBe(200);
+    });
   });
 
   describe('rescalePhoto', () => {

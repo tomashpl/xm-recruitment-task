@@ -1,3 +1,4 @@
+import { GRID_IMAGE_WIDTHS } from './fixtures/photos';
 import { expect, test } from './support/picsum';
 
 test.describe('photostream', () => {
@@ -8,6 +9,22 @@ test.describe('photostream', () => {
     await expect(page.getByRole('button', { name: /Add photo by .+ to favorites/ })).toHaveCount(
       30,
     );
+  });
+
+  test('downloads the smallest candidate that still covers the rendered tile', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('button', { name: /to favorites/ })).toHaveCount(30);
+
+    const picked = await page.evaluate(widths => {
+      const image = document.querySelector('app-photo-thumb img') as HTMLImageElement;
+      const needed = image.getBoundingClientRect().width * window.devicePixelRatio;
+      const covering = widths.find(width => width >= needed) ?? widths[widths.length - 1];
+
+      return { src: image.currentSrc, needed, covering };
+    }, GRID_IMAGE_WIDTHS);
+
+    expect(picked.needed).toBeGreaterThan(0);
+    expect(picked.src).toContain(`/${picked.covering}/`);
   });
 
   test('opens a snackbar and marks the tile when it is tapped', async ({ page }) => {

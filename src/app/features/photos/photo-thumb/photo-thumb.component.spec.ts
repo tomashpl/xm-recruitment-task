@@ -1,7 +1,9 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { GRID_IMAGE_WIDTHS } from '../../../shared/photos/picsum';
 import { samplePhoto } from '../../../shared/photos/picsum.test-data';
+import { GRID_TILE_SIZES } from '../photo-grid/photo-grid.component';
 import { PhotoThumbComponent } from './photo-thumb.component';
 
 describe('PhotoThumbComponent', () => {
@@ -28,8 +30,25 @@ describe('PhotoThumbComponent', () => {
     expect(image().getAttribute('alt')).toBe(photo.alt);
   });
 
+  it('lets the browser pick a candidate that matches the tile', () => {
+    const srcset = image().getAttribute('srcset') ?? '';
+
+    expect(srcset.split(', ').length).toBe(GRID_IMAGE_WIDTHS.length);
+    expect(srcset).toContain(`/${GRID_IMAGE_WIDTHS[0]}/`);
+    expect(image().getAttribute('sizes')).toBe(GRID_TILE_SIZES);
+  });
+
   it('loads lazily so long grids stay cheap', () => {
     expect(image().getAttribute('loading')).toBe('lazy');
+    expect(image().getAttribute('fetchpriority')).toBeNull();
+  });
+
+  it('loads eagerly at high priority when the tile is above the fold', async () => {
+    fixture.componentRef.setInput('priority', true);
+    await fixture.whenStable();
+
+    expect(image().getAttribute('loading')).toBe('eager');
+    expect(image().getAttribute('fetchpriority')).toBe('high');
   });
 
   it('adds the scrim only when the overlay is requested', async () => {

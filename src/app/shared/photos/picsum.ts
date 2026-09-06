@@ -5,6 +5,8 @@ export const PICSUM_ORIGIN = 'https://picsum.photos';
 export const PAGE_SIZE = 30;
 export const GRID_IMAGE_WIDTH = 600;
 export const DETAIL_IMAGE_WIDTH = 1200;
+export const IMAGE_FORMAT = 'webp';
+export const GRID_IMAGE_WIDTHS: readonly number[] = [240, 320, 480, 600];
 
 export interface PicsumPhotoDto {
   readonly id: string;
@@ -28,11 +30,21 @@ export function photoInfoUrl(id: string): string {
 }
 
 export function photoImageUrl(id: string, width: number, height: number): string {
-  return `${PICSUM_ORIGIN}/id/${id}/${width}/${height}`;
+  return `${PICSUM_ORIGIN}/id/${id}/${width}/${height}.${IMAGE_FORMAT}`;
 }
 
 export function scaledHeight(dto: PicsumPhotoDto, targetWidth: number): number {
   return Math.round((targetWidth * dto.height) / dto.width);
+}
+
+export function rescaledHeight(photo: Photo, targetWidth: number): number {
+  return Math.round((targetWidth * photo.height) / photo.width);
+}
+
+export function photoSrcset(photo: Photo, widths: readonly number[] = GRID_IMAGE_WIDTHS): string {
+  return widths
+    .map(width => `${photoImageUrl(photo.id, width, rescaledHeight(photo, width))} ${width}w`)
+    .join(', ');
 }
 
 export function rescalePhoto(photo: Photo, targetWidth: number): Photo {
@@ -40,7 +52,7 @@ export function rescalePhoto(photo: Photo, targetWidth: number): Photo {
     return photo;
   }
 
-  const height = Math.round((targetWidth * photo.height) / photo.width);
+  const height = rescaledHeight(photo, targetWidth);
 
   return {
     ...photo,

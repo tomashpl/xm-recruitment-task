@@ -6,7 +6,7 @@ import { FavoritesStore } from '../../shared/favorites/favorites.store';
 import { GridLayout, GridLayoutStore } from '../../shared/preferences/grid-layout';
 import { GridLayoutToggleComponent } from '../photos/grid-layout-toggle/grid-layout-toggle.component';
 import { PhotoGridComponent } from '../photos/photo-grid/photo-grid.component';
-import { PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
+import { PRIORITY_TILE_COUNT, PhotoTileComponent } from '../photos/photo-tile/photo-tile.component';
 
 @Component({
   selector: 'app-favorites-page',
@@ -27,6 +27,7 @@ export class FavoritesPageComponent {
 
   protected readonly favorites = inject(FavoritesStore);
   protected readonly layout = this.gridLayout.layout;
+  protected readonly priorityTiles = PRIORITY_TILE_COUNT;
 
   protected onLayoutChange(layout: GridLayout): void {
     this.gridLayout.set(layout);

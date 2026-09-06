@@ -1,3 +1,4 @@
 npx lint-staged
 npm run depcruise
 npm run check:styles
+npm run check:icons
