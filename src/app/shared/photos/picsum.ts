@@ -6,7 +6,7 @@ export const PAGE_SIZE = 30;
 export const GRID_IMAGE_WIDTH = 600;
 export const DETAIL_IMAGE_WIDTH = 1200;
 export const IMAGE_FORMAT = 'webp';
-export const GRID_IMAGE_WIDTHS: readonly number[] = [240, 320, 480, 600];
+export const GRID_IMAGE_WIDTHS: readonly number[] = [240, 320, 480, 512, 600];
 
 export interface PicsumPhotoDto {
   readonly id: string;

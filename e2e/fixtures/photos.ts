@@ -10,7 +10,7 @@ export interface PicsumDto {
 export const PAGE_SIZE = 30;
 export const TOTAL_PAGES = 3;
 export const GRID_IMAGE_WIDTH = 600;
-export const GRID_IMAGE_WIDTHS = [240, 320, 480, 600];
+export const GRID_IMAGE_WIDTHS = [240, 320, 480, 512, 600];
 
 const AUTHORS = ['Ada Lovelace', 'Grace Hopper', 'Alan Turing', 'Barbara Liskov'];
 const RATIOS: readonly (readonly [number, number])[] = [

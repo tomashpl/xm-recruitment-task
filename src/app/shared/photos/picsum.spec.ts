@@ -131,6 +131,7 @@ describe('picsum', () => {
         'https://picsum.photos/id/7/240/180.webp 240w, ' +
           'https://picsum.photos/id/7/320/240.webp 320w, ' +
           'https://picsum.photos/id/7/480/360.webp 480w, ' +
+          'https://picsum.photos/id/7/512/384.webp 512w, ' +
           'https://picsum.photos/id/7/600/450.webp 600w',
       );
     });

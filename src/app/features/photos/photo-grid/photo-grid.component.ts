@@ -17,8 +17,14 @@ import { GridMetrics, masonrySpan, photoAspectRatio } from '../masonry';
 
 const UNMEASURED: GridMetrics = { columnWidth: 0, gap: 0, rowUnit: 0 };
 
-export const GRID_TILE_SIZES =
-  '(min-width: 1160px) 221px, (min-width: 806px) calc(20vw - 11px), (min-width: 480px) 33vw, 50vw';
+export const GRID_TILE_SIZES = [
+  '(min-width: 1160px) 221px',
+  '(min-width: 806px) calc(20vw - 11px)',
+  '(min-width: 648px) calc(25vw - 12px)',
+  '(min-width: 490px) calc(33.333vw - 13px)',
+  '(min-width: 332px) calc(50vw - 16px)',
+  'calc(100vw - 24px)',
+].join(', ');
 
 @Component({
   selector: 'app-photo-grid',
