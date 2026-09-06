@@ -36,6 +36,14 @@ describe('AppComponent', () => {
     expect(main.getAttribute('tabindex')).toBe('-1');
   });
 
+  it('renders the animated background behind the routed content', () => {
+    const background: HTMLElement = fixture.nativeElement.querySelector('app-animated-background');
+    const main: HTMLElement = fixture.nativeElement.querySelector('main');
+    expect(background).not.toBeNull();
+    expect(background.querySelector('canvas')?.getAttribute('aria-hidden')).toBe('true');
+    expect(main.contains(background)).toBeFalse();
+  });
+
   it('renders a polite live region for later announcements', () => {
     const status: HTMLElement = fixture.nativeElement.querySelector('[role="status"]');
     expect(status.getAttribute('aria-live')).toBe('polite');
