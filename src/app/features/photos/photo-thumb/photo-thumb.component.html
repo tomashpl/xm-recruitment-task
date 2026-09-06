@@ -1,5 +1,7 @@
 <img
   [src]="photo().url"
+  [srcset]="srcset()"
+  [sizes]="sizes"
   [alt]="photo().alt"
   [attr.loading]="priority() ? 'eager' : 'lazy'"
   [attr.fetchpriority]="priority() ? 'high' : null"
