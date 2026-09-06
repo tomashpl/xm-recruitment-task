@@ -2,7 +2,6 @@ import {
   DETAIL_IMAGE_WIDTH,
   GRID_IMAGE_WIDTH,
   GRID_IMAGE_WIDTHS,
-  MAX_PAGES,
   PAGE_SIZE,
   hasNextPage,
   parsePhoto,
@@ -117,10 +116,6 @@ describe('picsum', () => {
     expect(picsumPageHeaders(2)['Link']).toContain('rel="next"');
     expect(picsumPageHeaders(null)['Link']).toContain('rel="prev"');
     expect(hasNextPage(picsumPageHeaders(null)['Link'])).toBeFalse();
-  });
-
-  it('caps the pages it will ever request above the size of the collection', () => {
-    expect(MAX_PAGES).toBeGreaterThan(34);
   });
 
   describe('photoSrcset', () => {

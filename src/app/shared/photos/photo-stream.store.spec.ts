@@ -4,8 +4,10 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { PHOTO_STREAM_RETRY_DELAYS, PhotoStreamStore } from './photo-stream.store';
-import { MAX_PAGES, PAGE_SIZE, photoListUrl } from './picsum';
+import { PAGE_SIZE, photoListUrl } from './picsum';
 import { picsumDtoList, picsumPageHeaders } from './picsum.test-data';
+
+const PAGES_PAST_FORMER_CAP = 41;
 
 describe('PhotoStreamStore', () => {
   let store: PhotoStreamStore;
@@ -157,16 +159,28 @@ describe('PhotoStreamStore', () => {
     expect(store.isLoadingMore()).toBeFalse();
   });
 
-  it('stops advancing at the page cap even while the api offers more', async () => {
+  it('keeps advancing for as long as the api offers another page', async () => {
     await deliver(1, 30, 2);
 
-    for (let page = 2; page <= MAX_PAGES; page++) {
+    for (let page = 2; page <= PAGES_PAST_FORMER_CAP; page++) {
       store.loadNext();
       await deliver(page, 30, page + 1);
     }
 
-    expect(store.photos().length).toBe(MAX_PAGES * PAGE_SIZE);
+    expect(store.photos().length).toBe(PAGES_PAST_FORMER_CAP * PAGE_SIZE);
+    expect(store.canLoadMore()).toBeTrue();
+  });
+
+  it('stops when a resolved page adds no photos even while the api offers more', async () => {
+    await deliver(1, 30, 2);
+    store.loadNext();
+    await deliver(2, 0, 3);
+
+    expect(store.photos().length).toBe(30);
+    expect(store.hasMore()).toBeFalse();
     expect(store.canLoadMore()).toBeFalse();
+    expect(store.isComplete()).toBeTrue();
+
     store.loadNext();
     await settle();
     httpMock.verify();

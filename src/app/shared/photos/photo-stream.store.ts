@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 
 import { Photo } from '../../models/photo.model';
-import { MAX_PAGES, PAGE_SIZE, hasNextPage, parsePhotoList, photoListUrl } from './picsum';
+import { PAGE_SIZE, hasNextPage, parsePhotoList, photoListUrl } from './picsum';
 
 export const PHOTO_STREAM_RETRY_DELAYS = new InjectionToken<readonly number[]>(
   'PhotoStreamRetryDelays',
@@ -40,22 +40,30 @@ export class PhotoStreamStore {
     defaultValue: [],
   });
 
+  private readonly batch = computed<PhotoBatch>(() => {
+    const status = this.response.status();
+    return { status, photos: status === 'resolved' ? this.response.value() : NO_PHOTOS };
+  });
+
   private readonly accumulated = linkedSignal<PhotoBatch, readonly Photo[]>({
-    source: () => {
-      const status = this.response.status();
-      return { status, photos: status === 'resolved' ? this.response.value() : NO_PHOTOS };
-    },
+    source: this.batch,
     computation: (batch, previous) => {
       const kept = previous?.value ?? NO_PHOTOS;
       return batch.status === 'resolved' ? [...kept, ...batch.photos] : kept;
     },
   });
 
+  private readonly lastBatchSize = linkedSignal<PhotoBatch, number>({
+    source: this.batch,
+    computation: (batch, previous) =>
+      batch.status === 'resolved' ? batch.photos.length : (previous?.value ?? 0),
+  });
+
   readonly photos = this.accumulated.asReadonly();
   readonly scrollOffset = this.offset.asReadonly();
 
   readonly hasMore = computed(
-    () => this.requestedPage() < MAX_PAGES && hasNextPage(this.response.headers()?.get('link')),
+    () => this.lastBatchSize() > 0 && hasNextPage(this.response.headers()?.get('link')),
   );
   readonly canLoadMore = computed(() => this.response.status() === 'resolved' && this.hasMore());
   readonly isComplete = computed(() => this.response.status() === 'resolved' && !this.hasMore());

@@ -1,6 +1,5 @@
 import { Photo } from '../../models/photo.model';
 
-export const MAX_PAGES = 40;
 export const PICSUM_ORIGIN = 'https://picsum.photos';
 export const PAGE_SIZE = 30;
 export const GRID_IMAGE_WIDTH = 600;
